@@ -1,0 +1,2975 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#17110d">
+<title>Sanātana — The Living Dharma Knowledge Portal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&family=Yatra+One&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500;1,600&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<style>
+:root {
+  --ink:#17110d;
+  --ink2:#211711;
+  --ink3:#2b1c12;
+  --saffron:#e88720;
+  --saffron2:#ffb44c;
+  --gold:#e9c66d;
+  --cream:#f7efd9;
+  --muted:#b9ab95;
+  --line:#5a3a21;
+  --maroon:#5a1719;
+  --green:#4c8c67;
+  --paper:#f0e4c6;
+  --shadow:0 22px 70px #0008;
+}
+* {
+  box-sizing:border-box;
+}
+html {
+  scroll-behavior:smooth;
+}
+body {
+  margin:0;
+  background:var(--ink);
+  color:var(--cream);
+  font:14px Inter,system-ui,sans-serif;
+  overflow-x:hidden;
+}
+body:before {
+  content:"";
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:-2;
+  background:radial-gradient(circle at 70% 0,#8b4d1822,transparent 30%),radial-gradient(circle at 15% 85%,#6d201b1c,transparent 28%),linear-gradient(#17110d,#120e0b);
+}
+body:after {
+  content:"";
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:-1;
+  opacity:.18;
+  background-image:radial-gradient(#e9c66d 1px,transparent 1px);
+  background-size:34px 34px;
+  mask-image:linear-gradient(to bottom,black,transparent 75%);
+}
+button,input,select,textarea {
+  font:inherit;
+}
+button {
+  cursor:pointer;
+}
+.app {
+  display:flex;
+  min-height:100vh;
+}
+.sidebar {
+  width:236px;
+  position:fixed;
+  inset:0 auto 0 0;
+  z-index:50;
+  padding:18px 15px;
+  background:linear-gradient(180deg,#21150f,#17110d 70%);
+  border-right:1px solid #6c4624;
+  box-shadow:10px 0 45px #0006;
+  overflow:auto;
+}
+.brand {
+  display:flex;
+  align-items:center;
+  gap:11px;
+  padding:7px 7px 19px;
+  border-bottom:1px solid #5a3a21;
+  margin-bottom:16px;
+}
+.om {
+  width:43px;
+  height:43px;
+  border-radius:50%;
+  display:grid;
+  place-items:center;
+  font:29px 'Yatra One',serif;
+  color:#2a1708;
+  background:radial-gradient(circle,#ffd873,#e98a1e);
+  box-shadow:0 0 0 3px #6c431f,0 0 28px #e8872044;
+}
+.brand strong {
+  font:700 19px Cinzel,serif;
+  letter-spacing:1px;
+  color:#f3c763;
+}
+.brand small {
+  display:block;
+  color:#aa9678;
+  font-size:8px;
+  letter-spacing:2px;
+  margin-top:3px;
+}
+.heritage {
+  font-family:'Noto Sans Devanagari',sans-serif;
+  font-size:11px;
+  color:#d8bd76;
+  text-align:center;
+  margin:0 0 16px;
+}
+.nav {
+  display:grid;
+  gap:6px;
+}
+.nav button {
+  width:100%;
+  border:1px solid transparent;
+  background:transparent;
+  color:#c4b6a2;
+  text-align:left;
+  padding:11px 11px;
+  border-radius:10px;
+  display:flex;
+  gap:11px;
+  align-items:center;
+}
+.nav button:hover,.nav button.active {
+  color:#ffd27b;
+  background:linear-gradient(90deg,#3b2417,#291b13);
+  border-color:#75471f;
+  box-shadow:inset 3px 0 #f2a239;
+}
+.ico {
+  width:18px;
+  text-align:center;
+  color:#d4a857;
+  font-size:14px;
+}
+.nav small {
+  display:block;
+  color:#776957;
+  font-size:8px;
+  margin-top:2px;
+}
+.side-foot {
+  margin-top:20px;
+  padding:12px;
+  border:1px solid #4b321f;
+  border-radius:10px;
+  background:#20150f;
+  color:#9e8d74;
+  font-size:9px;
+  line-height:1.6;
+}
+.dot {
+  display:inline-block;
+  width:7px;
+  height:7px;
+  border-radius:50%;
+  background:#62bd83;
+  box-shadow:0 0 9px #62bd83;
+  margin-right:6px;
+}
+.main {
+  margin-left:236px;
+  width:calc(100% - 236px);
+}
+.topbar {
+  height:68px;
+  position:sticky;
+  top:0;
+  z-index:40;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:0 25px;
+  background:#17110df2;
+  backdrop-filter:blur(14px);
+  border-bottom:1px solid #51351f;
+}
+.search-wrap {
+  position:relative;
+  flex:1;
+  max-width:520px;
+}
+.search {
+  width:100%;
+  height:40px;
+  border:1px solid #5b3a20;
+  border-radius:20px;
+  background:#20150f;
+  color:#f8edd8;
+  padding:0 16px 0 42px;
+  outline:none;
+}
+.search:focus {
+  border-color:#d68a2a;
+  box-shadow:0 0 0 3px #d68a2a18;
+}
+.search-wrap span {
+  position:absolute;
+  left:16px;
+  top:10px;
+  color:#d6b46c;
+}
+.top-actions {
+  margin-left:auto;
+  display:flex;
+  gap:9px;
+}
+.btn {
+  border:1px solid #634124;
+  background:#24170f;
+  color:#f6ead4;
+  border-radius:9px;
+  padding:9px 13px;
+}
+.btn:hover {
+  border-color:#c07a27;
+}
+.btn.primary {
+  background:linear-gradient(135deg,#f0a13a,#d87517);
+  color:#211308;
+  border-color:#f1a43e;
+  font-weight:700;
+  box-shadow:0 8px 20px #d8751730;
+}
+.btn.gold {
+  background:#d8b35c;
+  color:#27180c;
+  border-color:#e6c879;
+}
+.page {
+  max-width:1280px;
+  margin:auto;
+  padding:28px 30px 80px;
+}
+.view {
+  display:none;
+}
+.view.active {
+  display:block;
+  animation:fade .35s ease;
+}
+@keyframes fade {
+  from {
+    opacity:0;
+    transform:translateY(7px);
+  }
+  to {
+    opacity:1;
+    transform:none;
+  }
+}
+.ornament {
+  display:flex;
+  align-items:center;
+  gap:12px;
+  color:#d9b86c;
+  margin:4px 0 16px;
+}
+.ornament:before,.ornament:after {
+  content:"";
+  height:1px;
+  background:linear-gradient(90deg,transparent,#795127,transparent);
+  flex:1;
+}
+.om-mini {
+  font:20px 'Yatra One',serif;
+  color:#d9b86c;
+}
+.eyebrow {
+  font-family:'JetBrains Mono',ui-monospace,Menlo,monospace;
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  padding:6px 11px;
+  border:1px solid #8c5c27;
+  border-radius:20px;
+  background:#342116;
+  color:#efc267;
+  font-size:9px;
+  font-weight:700;
+  letter-spacing:.8px;
+  text-transform:uppercase;
+}
+.hero {
+  position:relative;
+  min-height:360px;
+  padding:45px 45px;
+  border:1px solid #8c5b26;
+  border-radius:24px;
+  overflow:hidden;
+  background:radial-gradient(circle at 80% 50%,#8a4b182b,transparent 25%),linear-gradient(125deg,#261811,#17110d 58%,#2c1b12);
+  box-shadow:var(--shadow);
+}
+.hero:before {
+  content:"ॐ";
+  position:absolute;
+  right:7%;
+  top:35px;
+  font:240px 'Yatra One',serif;
+  color:#e8c56d0d;
+  line-height:1;
+}
+.hero:after {
+  content:"";
+  position:absolute;
+  inset:16px;
+  border:1px solid #d6a85325;
+  border-radius:18px;
+  pointer-events:none;
+}
+.hero-content {
+  position:relative;
+  z-index:1;
+  max-width:790px;
+}
+.hero h1 {
+  font:800 clamp(34px,4.2vw,62px)/.98 Cinzel,serif;
+  letter-spacing:-1px;
+  margin:19px 0 16px;
+  color:#fff5dd;
+  text-shadow:0 3px 25px #0008;
+}
+.hero h1 span {
+  color:#e8bd5d;
+}
+.hero p {
+  max-width:760px;
+  color:#cbbba1;
+  font-size:15px;
+  line-height:1.85;
+}
+.hero-actions {
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  margin-top:23px;
+}
+.hero-note {
+  margin-top:25px;
+  display:flex;
+  gap:12px;
+  align-items:center;
+  color:#9f8e75;
+  font-size:10px;
+}
+.hero-note b {
+  color:#e3bd67;
+}
+.section-head {
+  display:flex;
+  align-items:end;
+  justify-content:space-between;
+  gap:18px;
+  margin:48px 0 18px;
+}
+.section-head h2 {
+  font:700 28px Cinzel,serif;
+  margin:0;
+  color:#f4dfb0;
+}
+.section-head p {
+  max-width:650px;
+  color:#a99880;
+  line-height:1.7;
+  margin:6px 0 0;
+}
+.section-kicker {
+  font-family:'JetBrains Mono',ui-monospace,Menlo,monospace;
+  color:#e49b36;
+  font-size:9px;
+  letter-spacing:1.8px;
+  text-transform:uppercase;
+  font-weight:700;
+}
+.rule {
+  height:1px;
+  background:linear-gradient(90deg,#8b5a28,transparent);
+}
+.panel {
+  background:linear-gradient(145deg,#261912,#1c130e);
+  border:1px solid #553720;
+  border-radius:15px;
+  padding:20px;
+  box-shadow:0 15px 45px #0003;
+}
+.panel.paper {
+  background:linear-gradient(145deg,#33261b,#251a13);
+}
+.panel h3 {
+  font:600 17px Cinzel,serif;
+  color:#f0d28a;
+  margin:0 0 10px;
+}
+.panel p,.panel li {
+  color:#c0b09a;
+  line-height:1.75;
+}
+.panel strong {
+  color:#ead39a;
+}
+.grid2 {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:18px;
+}
+.grid3 {
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:18px;
+}
+.grid4 {
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:15px;
+}
+.stack {
+  display:grid;
+  gap:16px;
+}
+.quote-card {
+  position:relative;
+  padding:24px;
+  border-left:3px solid #d99a3b;
+  background:#23170f;
+  border-radius:0 12px 12px 0;
+}
+.quote-card .sanskrit {
+  font:600 18px/1.9 'Noto Sans Devanagari',sans-serif;
+  color:#f2d476;
+}
+.quote-card .trans {
+  font:italic 500 16px/1.7 'Cormorant Garamond',Georgia,serif;
+  color:#e8d6b0;
+}
+.quote-card .meaning {
+  font-size:12px;
+  color:#aa997f;
+  margin-top:8px;
+}
+.kpi {
+  padding:17px;
+  border:1px solid #563a23;
+  border-radius:12px;
+  background:#21160f;
+}
+.kpi .num {
+  font:700 28px 'JetBrains Mono',ui-monospace,monospace;
+  color:#edc76b;
+}
+.kpi .lab {
+  font-size:10px;
+  color:#9e8b70;
+  margin-top:5px;
+}
+.tag {
+  font-family:'JetBrains Mono',ui-monospace,Menlo,monospace;
+  display:inline-block;
+  padding:4px 8px;
+  border-radius:12px;
+  background:#392719;
+  border:1px solid #624124;
+  color:#d9b66b;
+  font-size:9px;
+}
+.tag.green {
+  background:#183525;
+  border-color:#2e6545;
+  color:#78c592;
+}
+.tag.red {
+  background:#3c1b1a;
+  border-color:#70312d;
+  color:#e6a09a;
+}
+.timeline {
+  position:relative;
+  margin-left:12px;
+  padding-left:30px;
+}
+.timeline:before {
+  content:"";
+  position:absolute;
+  left:5px;
+  top:0;
+  bottom:0;
+  width:1px;
+  background:#674323;
+}
+.step {
+  position:relative;
+  padding:0 0 24px;
+}
+.step:before {
+  content:"";
+  position:absolute;
+  left:-30px;
+  top:3px;
+  width:10px;
+  height:10px;
+  border-radius:50%;
+  background:#e7b85c;
+  box-shadow:0 0 0 4px #392719;
+}
+.step b {
+  color:#edc875;
+}
+.step p {
+  margin:5px 0;
+  color:#b9aa95;
+  font-size:12px;
+  line-height:1.7;
+}
+.accordion {
+  border:1px solid #543821;
+  border-radius:10px;
+  overflow:hidden;
+}
+.accordion details {
+  border-bottom:1px solid #4a321f;
+  background:#21160f;
+}
+.accordion details:last-child {
+  border-bottom:0;
+}
+.accordion summary {
+  cursor:pointer;
+  list-style:none;
+  padding:15px 17px;
+  color:#e6cb8a;
+  font-weight:600;
+}
+.accordion summary::-webkit-details-marker {
+  display:none;
+}
+.accordion summary:after {
+  content:"＋";
+  float:right;
+  color:#ba8b42;
+}
+.accordion details[open] summary:after {
+  content:"−";
+}
+.accordion .detail {
+  padding:0 17px 17px;
+  color:#bba990;
+  line-height:1.8;
+  font-size:12px;
+}
+.tabs {
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  margin-bottom:18px;
+}
+.tab {
+  padding:8px 11px;
+  border:1px solid #543821;
+  background:#21160f;
+  color:#bcae98;
+  border-radius:8px;
+}
+.tab.active,.tab:hover {
+  background:#4a2c17;
+  color:#ffd37c;
+  border-color:#96612a;
+}
+.searchline {
+  display:flex;
+  gap:9px;
+  margin-bottom:18px;
+}
+.searchline input,.select {
+  width:100%;
+  border:1px solid #5a3b22;
+  background:#20150f;
+  color:#f0e4cd;
+  border-radius:9px;
+  padding:10px;
+  outline:none;
+}
+.select {
+  width:auto;
+  min-width:170px;
+}
+.card-grid {
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:16px;
+}
+.entity-card {
+  min-height:245px;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+}
+.entity-card .symbol {
+  font-size:28px;
+  margin-bottom:8px;
+}
+.entity-card h3 {
+  font:600 20px Cinzel,serif;
+  margin:0 0 7px;
+  color:#f2d18a;
+}
+.entity-card p {
+  font-size:12px;
+  color:#b7a58d;
+  line-height:1.7;
+}
+.entity-card .meta {
+  display:flex;
+  gap:6px;
+  flex-wrap:wrap;
+  margin:10px 0;
+}
+.table-wrap {
+  overflow:auto;
+  border:1px solid #553821;
+  border-radius:12px;
+}
+.table {
+  width:100%;
+  border-collapse:collapse;
+  min-width:650px;
+}
+.table th,.table td {
+  padding:12px 14px;
+  border-bottom:1px solid #49321f;
+  text-align:left;
+}
+.table th {
+  background:#2b1a11;
+  color:#e5c475;
+  font-size:10px;
+  text-transform:uppercase;
+  letter-spacing:.8px;
+}
+.table td {
+  color:#bcae97;
+  font-size:12px;
+  line-height:1.55;
+}
+.table tr:last-child td {
+  border-bottom:0;
+}
+.sticky-nav {
+  position:sticky;
+  top:86px;
+  z-index:5;
+  display:flex;
+  gap:6px;
+  flex-wrap:wrap;
+  padding:8px;
+  margin:0 0 22px;
+  background:#1a120df2;
+  border:1px solid #4e341f;
+  border-radius:11px;
+  backdrop-filter:blur(10px);
+}
+.sticky-nav a {
+  color:#bba98d;
+  text-decoration:none;
+  padding:7px 9px;
+  border-radius:7px;
+  font-size:10px;
+}
+.sticky-nav a:hover {
+  background:#382318;
+  color:#f4cc77;
+}
+.progress {
+  height:4px;
+  position:fixed;
+  top:68px;
+  left:236px;
+  right:0;
+  z-index:60;
+  background:#2b1b11;
+}
+.progress i {
+  display:block;
+  height:100%;
+  width:0;
+  background:linear-gradient(90deg,#c96f18,#f3cf70);
+  box-shadow:0 0 12px #e9a33a;
+}
+#map {
+  height:470px;
+  border-radius:13px;
+  border:1px solid #664524;
+  overflow:hidden;
+  filter:saturate(.8) sepia(.15);
+}
+.map-note {
+  font-size:10px;
+  color:#98866e;
+  margin-top:8px;
+}
+.leaflet-popup-content-wrapper,.leaflet-popup-tip {
+  background:#24170f;
+  color:#f0e3ca;
+}
+.leaflet-popup-content {
+  font-family:Inter,system-ui,sans-serif;
+  font-size:12px;
+}
+.leaflet-control-zoom a {
+  background:#281a11!important;
+  color:#f0d18b!important;
+  border-color:#5b3b22!important;
+}
+.reader {
+  display:grid;
+  grid-template-columns:230px 1fr;
+  gap:16px;
+}
+.reader-nav {
+  border:1px solid #543821;
+  border-radius:12px;
+  padding:11px;
+  background:#21160f;
+  align-self:start;
+  position:sticky;
+  top:88px;
+}
+.reader-nav button {
+  width:100%;
+  padding:9px;
+  border:0;
+  background:transparent;
+  color:#ae9e86;
+  text-align:left;
+  border-radius:7px;
+}
+.reader-nav button.active,.reader-nav button:hover {
+  background:#3a2417;
+  color:#f3cd78;
+}
+.manuscript {
+  min-height:560px;
+  background:linear-gradient(145deg,#f1e2bf,#d9c38f);
+  color:#342417;
+  border:6px double #8b642c;
+  border-radius:8px;
+  padding:34px 42px;
+  box-shadow:var(--shadow);
+  position:relative;
+}
+.manuscript:before {
+  content:"॥ ॐ ॥";
+  position:absolute;
+  top:12px;
+  left:0;
+  right:0;
+  text-align:center;
+  font:20px 'Yatra One',serif;
+  color:#8b5a27;
+}
+.manuscript h2 {
+  font:700 28px Cinzel,serif;
+  color:#5a3417;
+  margin-top:20px;
+}
+.manuscript p {
+  font:14px/1.9 Georgia,serif;
+}
+.manuscript .dev {
+  font:20px/2 'Noto Sans Devanagari',sans-serif;
+  color:#6c3e1c;
+}
+.family-card {
+  cursor:pointer;
+  transition:.2s transform,.2s border-color;
+}
+.family-card:hover,.family-card.active {
+  transform:translateY(-3px);
+  border-color:#b7792b;
+  box-shadow:0 12px 32px #0005;
+}
+.fav-toggle {
+  float:right;
+  border:1px solid #5a3a21;
+  background:#20150f;
+  color:#d8b76d;
+  border-radius:8px;
+  padding:5px 8px;
+}
+.fav-toggle.saved {
+  background:#4b2515;
+  color:#ffd36f;
+  border-color:#c37b28;
+}
+.reader-nav button.active {
+  background:#4a2c17;
+  color:#f3cd78;
+}
+.map-tools {
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  margin-bottom:12px;
+}
+.map-tools input {
+  flex:1;
+  min-width:180px;
+}
+.status-line {
+  font-size:11px;
+  color:#bca98c;
+  margin-top:8px;
+}
+.festival-card {
+  cursor:pointer;
+}
+.deep-dive {
+  margin-top:18px;
+}
+.deep-dive .section-head {
+  margin-top:36px;
+}
+.loading {
+  opacity:.65;
+  pointer-events:none;
+}
+.chat {
+  min-height:650px;
+  display:grid;
+  grid-template-rows:auto 1fr auto;
+  gap:12px;
+}
+.messages {
+  min-height:430px;
+  max-height:530px;
+  overflow:auto;
+  padding:12px;
+  border:1px solid #4f351f;
+  border-radius:12px;
+  background:#1b120d;
+}
+.msg {
+  max-width:82%;
+  padding:13px 15px;
+  border-radius:12px;
+  line-height:1.65;
+  margin-bottom:9px;
+}
+.bot {
+  background:#2a1b12;
+  border:1px solid #543721;
+  color:#cbb99d;
+}
+.user {
+  margin-left:auto;
+  background:#68401d;
+  color:#f7e7c2;
+}
+.chatbar {
+  display:flex;
+  gap:8px;
+}
+.chatbar input {
+  flex:1;
+  background:#20150f;
+  border:1px solid #593b22;
+  color:#f7ead3;
+  border-radius:9px;
+  padding:12px;
+}
+.sources {
+  font-size:10px;
+  color:#8e7d66;
+  border-top:1px solid #4c321f;
+  padding-top:10px;
+}
+.modal-bg {
+  position:fixed;
+  inset:0;
+  background:#090604d9;
+  backdrop-filter:blur(7px);
+  display:none;
+  place-items:center;
+  z-index:100;
+  padding:20px;
+}
+.modal-bg.open {
+  display:grid;
+}
+.modal {
+  width:min(760px,100%);
+  max-height:88vh;
+  overflow:auto;
+  background:linear-gradient(145deg,#2a1a11,#19110c);
+  border:1px solid #8a5a27;
+  border-radius:16px;
+  padding:24px;
+  box-shadow:var(--shadow);
+}
+.modal h2 {
+  font:700 25px Cinzel,serif;
+  color:#f0cf7e;
+  margin-top:0;
+}
+.close {
+  float:right;
+  border:0;
+  background:none;
+  color:#c6b69e;
+  font-size:26px;
+}
+.form {
+  display:grid;
+  gap:11px;
+}
+.form input,.form textarea,.form select {
+  background:#17100c;
+  border:1px solid #553821;
+  color:#f5ead5;
+  padding:11px;
+  border-radius:8px;
+}
+.result {
+  padding:13px;
+  border:1px solid #523620;
+  background:#21160f;
+  border-radius:9px;
+  color:#bba990;
+  line-height:1.7;
+}
+.toast {
+  position:fixed;
+  right:22px;
+  bottom:22px;
+  z-index:120;
+  background:#2c1b11;
+  border:1px solid #8a5b29;
+  color:#f6dfad;
+  padding:12px 15px;
+  border-radius:10px;
+  display:none;
+  box-shadow:var(--shadow);
+}
+.toast.show {
+  display:block;
+}
+.footer {
+  margin-top:70px;
+  padding:32px 0 0;
+  border-top:1px solid #4d321f;
+  color:#85745e;
+  font-size:10px;
+  line-height:1.8;
+}
+.footer .omfoot {
+  text-align:center;
+  font:24px 'Yatra One',serif;
+  color:#d3ad61;
+}
+@media(max-width:1050px) {
+  .sidebar {
+    width:78px;
+  }
+  .brand strong,.brand small,.heritage,.nav span:not(.ico),.side-foot {
+    display:none;
+  }
+  .brand {
+    justify-content:center;
+  }
+  .nav button {
+    justify-content:center;
+  }
+  .main {
+    margin-left:78px;
+    width:calc(100% - 78px);
+  }
+  .progress {
+    left:78px;
+  }
+  .grid4 {
+    grid-template-columns:1fr 1fr;
+  }
+  .grid3,.card-grid {
+    grid-template-columns:1fr 1fr;
+  }
+  .reader {
+    grid-template-columns:1fr;
+  }
+  .reader-nav {
+    position:static;
+    display:flex;
+    overflow:auto;
+  }
+  .reader-nav button {
+    white-space:nowrap;
+    width:auto;
+  }
+}
+@media(max-width:700px) {
+  .topbar {
+    padding:0 12px;
+  }
+  .top-actions .btn:first-child {
+    display:none;
+  }
+  .page {
+    padding:18px 14px 60px;
+  }
+  .hero {
+    padding:30px 24px;
+    min-height:330px;
+  }
+  .hero h1 {
+    font-size:34px;
+  }
+  .grid2,.grid3,.grid4,.card-grid {
+    grid-template-columns:1fr;
+  }
+  .section-head {
+    display:block;
+  }
+  .section-head h2 {
+    font-size:23px;
+  }
+  .sticky-nav {
+    top:76px;
+  }
+  .progress {
+    top:68px;
+  }
+  .manuscript {
+    padding:25px 20px;
+  }
+}
+</style>
+</head>
+<body>
+<div class="progress"><i id="progressBar"></i></div>
+<div class="app">
+<aside class="sidebar">
+  <div class="brand"><div class="om">ॐ</div><div><strong>SANĀTANA</strong><small>THE LIVING DHARMA</small></div></div>
+  <div class="heritage">धर्मो रक्षति रक्षितः</div>
+  <nav class="nav">
+    <button class="active" data-view="dashboard"><span class="ico">⌂</span><span>Sanātana Home<small>Portal & orientation</small></span></button>
+    <button data-view="deities"><span class="ico">✦</span><span>Deities & Traditions<small>Forms, symbols, sampradāyas</small></span></button>
+    <button data-view="scriptures"><span class="ico">▤</span><span>Scripture Library<small>Text, context, study</small></span></button>
+    <button data-view="panchang"><span class="ico">☾</span><span>Pañcāṅga & Festivals<small>Time, tithi, observances</small></span></button>
+    <button data-view="temples"><span class="ico">♜</span><span>Temple Atlas<small>Architecture & pilgrimage</small></span></button>
+    <button data-view="philosophy"><span class="ico">◉</span><span>Darśana & Yoga<small>Philosophy & practice</small></span></button>
+    <button data-view="dharma"><span class="ico">✧</span><span>Ask Dharma AI<small>Study assistant</small></span></button>
+    <button data-view="admin"><span class="ico">◆</span><span>Curator's Room<small>Content & system</small></span></button>
+  </nav>
+  <div class="side-foot"><span class="dot"></span>Knowledge systems online<br>Curated learning interface · v3.0 Heritage Edition</div>
+</aside>
+<main class="main">
+<header class="topbar">
+  <div class="search-wrap"><span>⌕</span><input id="globalSearch" class="search" placeholder="Search the tradition: Veda, Gītā, Śiva, karma, tithi, temple…"></div>
+  <div class="top-actions"><button class="btn" id="favBtn">♡ Favorites</button><button class="btn primary" id="liveBtn">✦ Live Sādhanā</button></div>
+</header>
+<div class="page">
+
+<section id="dashboard" class="view active">
+  <div class="hero">
+    <div class="hero-content">
+      <span class="eyebrow">✺ SANĀTANA HERITAGE PORTAL · धर्मं सनातनम्</span>
+      <h1>Enter the <span>living tradition</span> of Dharma.</h1>
+      <p>A long-form knowledge sanctuary for studying Hindu traditions through scripture, philosophy, sacred time, pilgrimage, deity traditions, yoga and carefully separated layers of text, interpretation and practice.</p>
+      <div class="hero-actions"><button class="btn primary" id="askBtn">✧ Ask Dharma AI</button><button class="btn gold" data-view-btn="scriptures">Open Scripture Hall</button><button class="btn" data-scroll="foundations">Begin the Journey ↓</button></div>
+      <div class="hero-note"><span class="dot"></span><b>Curated learning mode</b> · Explanations distinguish primary texts, traditional interpretation and modern scholarly framing.</div>
+    </div>
+  </div>
+  <div class="ornament"><span class="om-mini">ॐ</span></div>
+  <div class="grid4">
+    <div class="kpi"><div class="num">4</div><div class="lab">Vedas · foundational śruti collections</div></div><div class="kpi"><div class="num">6</div><div class="lab">Āstika darśanas · classical philosophical systems</div></div><div class="kpi"><div class="num">18</div><div class="lab">Bhagavad Gītā · chapters of the dialogue</div></div><div class="kpi"><div class="num">108</div><div class="lab">Traditional sacred-number motif · context varies by tradition</div></div>
+  </div>
+  <div id="foundations" class="section-head"><div><div class="section-kicker">I · Orientation</div><h2>How to read Sanātana Dharma</h2><p>There is no single book or institution that exhausts the tradition. Start by understanding its layers, vocabulary and diverse lineages.</p></div></div>
+  <div class="grid3">
+    <article class="panel"><h3>Śruti · “that which is heard”</h3><p>Traditionally, the Vedas are classified as <strong>śruti</strong>: revealed sacred literature preserved through rigorous oral transmission. The Saṃhitās, Brāhmaṇas, Āraṇyakas and Upaniṣads form major textual layers of Vedic literature.</p><span class="tag">Textual foundation</span></article>
+    <article class="panel"><h3>Smṛti · “that which is remembered”</h3><p>Smṛti encompasses a broad family of remembered and transmitted literature, including Dharmaśāstra, Itihāsa, Purāṇa and many later traditions. Its authority and role vary by school and context.</p><span class="tag">Expansive literature</span></article>
+    <article class="panel"><h3>Sampradāya · living transmission</h3><p>A <strong>sampradāya</strong> is a lineage of teaching and practice. Vaiṣṇava, Śaiva, Śākta, Smārta and many regional traditions preserve distinct theological languages while sharing a wider civilizational vocabulary.</p><span class="tag">Lineage matters</span></article>
+  </div>
+  <div class="section-head"><div><div class="section-kicker">II · Daily study</div><h2>Wisdom, not just information</h2></div></div>
+  <div class="grid2">
+    <div class="quote-card"><div class="sanskrit">कर्मण्येवाधिकारस्ते मा फलेषु कदाचन ।</div><div class="trans">Karmaṇy evādhikāras te mā phaleṣu kadācana.</div><div class="meaning">Bhagavad Gītā 2.47 · A famous teaching on action and non-attachment to the fruits of action. Read the verse within the larger argument of the Gītā rather than as an isolated slogan.</div></div>
+    <div class="panel"><h3>Today’s learning trail</h3><div class="timeline"><div class="step"><b>1 · Learn a term</b><p>Dharma does not map neatly to one English word; context can include duty, order, right conduct, law or the sustaining principle of a situation.</p></div><div class="step"><b>2 · Locate the source</b><p>Ask: Veda, Upaniṣad, Gītā, Purāṇa, Āgama, epic, philosophical sūtra or later commentary?</p></div><div class="step"><b>3 · Compare interpretations</b><p>Different schools can read the same passage differently. Difference is part of the intellectual history, not necessarily an error.</p></div></div></div>
+  </div>
+  <div class="section-head"><div><div class="section-kicker">III · Deep archive preview</div><h2>What lies below the surface</h2></div></div>
+  <div class="accordion">
+    <details open><summary>Why are there so many deities?</summary><div class="detail">Hindu traditions contain multiple theological models: devotion to a chosen form (iṣṭa-devatā), traditions centered on Viṣṇu, Śiva or Devī, philosophical accounts of ultimate reality, and regional forms. The existence of many forms does not imply one uniform Hindu theology; it reflects a plural religious civilization.</div></details>
+    <details><summary>Why does the same festival differ by region?</summary><div class="detail">Calendars, lunar months, local ritual manuals, temple customs, regional histories and sampradāya practices can produce legitimate variation. A responsible portal should label the regional convention instead of presenting one observance as universally identical.</div></details>
+    <details><summary>What makes a source “primary”?</summary><div class="detail">For study purposes, a primary text is a source directly belonging to the tradition under investigation, such as a Sanskrit text or a historically situated inscription. A translation is a representation of that source; a commentary is an interpretation; a modern article is secondary scholarship.</div></details>
+  </div>
+</section>
+
+<section id="deities" class="view">
+  <div class="section-head"><div><div class="section-kicker">Temple of forms</div><h2>Deities, names & traditions</h2><p>Go beyond “who is this deity?” Study theology, iconography, major textual appearances, festivals, symbols and living traditions.</p></div></div>
+  <div class="sticky-nav"><a href="#deity-map">Tradition map</a><a href="#deity-library">Deity library</a><a href="#deity-compare">Compare</a><a href="#deity-notes">Study notes</a></div>
+  <div id="deity-map" class="grid3">
+    <div class="panel"><h3>Vaiṣṇava traditions</h3><p>Centered on Viṣṇu and/or his avatāras such as Rāma and Kṛṣṇa. Major theological traditions include Śrīvaiṣṇava, Madhva, Gauḍīya and others, with substantial internal diversity.</p><span class="tag">Viṣṇu · Rāma · Kṛṣṇa</span></div>
+    <div class="panel"><h3>Śaiva traditions</h3><p>Centered on Śiva in forms such as Maheśvara, Naṭarāja and Dakṣiṇāmūrti. Śaiva Siddhānta, Kashmir Śaivism and other traditions develop distinct philosophical and ritual frameworks.</p><span class="tag">Śiva · Śakti</span></div>
+    <div class="panel"><h3>Śākta traditions</h3><p>Center Devī as supreme reality or as a primary divine focus. Durgā, Kālī, Lalitā Tripurasundarī and other forms appear across diverse ritual and theological traditions.</p><span class="tag">Devī · Śakti</span></div>
+  </div>
+  <div id="deity-library" class="section-head"><div><div class="section-kicker">Deity library</div><h2>Study each form through multiple lenses</h2></div><select id="deityFilter" class="select"><option>All</option><option>Vaiṣṇava</option><option>Śaiva</option><option>Śākta</option><option>Other</option></select></div>
+  <div id="deityGrid" class="card-grid"></div>
+  <div id="deity-compare" class="section-head"><div><div class="section-kicker">Comparative study</div><h2>Iconography is a visual language</h2></div></div>
+  <div class="table-wrap"><table class="table"><thead><tr><th>Element</th><th>What to ask</th><th>Why it matters</th></tr></thead><tbody><tr><td>Vāhana</td><td>Which vehicle or animal accompanies the deity?</td><td>Iconographic associations can communicate power, domain, mythic relationship or theological symbolism.</td></tr><tr><td>Āyudha</td><td>What objects are held?</td><td>Weapons, instruments, lotuses, conch, discus and other attributes help identify a form and its narrative associations.</td></tr><tr><td>Mudrā</td><td>How are the hands positioned?</td><td>Gestures may signify blessing, teaching, fearlessness, offering or other conventional meanings.</td></tr><tr><td>Āsana & posture</td><td>Standing, seated, dancing, reclining?</td><td>Posture can encode a particular myth, ritual function or theological aspect.</td></tr></tbody></table></div>
+  <div id="deity-notes" class="section-head"><div><div class="section-kicker">Curator’s method</div><h2>Do not flatten living traditions</h2></div></div>
+  <div class="accordion"><details open><summary>Name, form and theology are not identical</summary><div class="detail">A divine name may have Vedic, epic, Purāṇic, Āgamic, Tantric, regional and philosophical histories. Record the form being discussed, the source where it appears and the tradition interpreting it before drawing a universal conclusion.</div></details><details><summary>Iconography is evidence of a visual convention, not a single universal code</summary><div class="detail">Attributes such as śaṅkha, cakra, triśūla, lotus, vāhana and mudrā can identify forms, but their interpretation depends on iconographic manuals, regional sculpture, temple practice and the specific deity image.</div></details><details><summary>Avatāra is a technical theological category</summary><div class="detail">In Vaiṣṇava traditions, avatāra theology develops in different texts and schools. Do not automatically treat every popular list or regional divine figure as an identical textual category.</div></details><details><summary>Primary-source trail</summary><div class="detail">For every deity dossier, the production version should attach source layers: Vedic references where relevant; epic passages; Purāṇic passages; Āgama/Tantra where applicable; stotra or devotional literature; inscriptional/art-historical evidence; and modern scholarship.</div></details></div>
+  <div class="grid2"><div class="panel"><h3>Names are contextual</h3><p>“Śiva”, “Rudra”, “Maheśvara”, “Śaṅkara” and many epithets overlap but are not interchangeable in every textual or theological context. Study the passage, lineage and period.</p></div><div class="panel"><h3>Myth is layered</h3><p>Purāṇic narratives often exist in multiple versions. A difference between sources can be historically meaningful. Record the source instead of silently merging variants.</p></div></div>
+</section>
+
+<section id="scriptures" class="view">
+  <div class="section-head"><div><div class="section-kicker">The granary of words</div><h2>Scripture Hall</h2><p>A layered library: text family → historical context → structure → ideas → selected passage → interpretation.</p></div></div>
+  <div class="sticky-nav"><a href="#scripture-tree">Textual tree</a><a href="#scripture-list">Library</a><a href="#reader">Reader</a><a href="#study-method">Study method</a></div>
+  <div id="scripture-tree" class="grid4">
+    <button class="kpi family-card" data-family="Veda"><div class="num">Veda</div><div class="lab">Śruti · hymns, ritual, recitation and Vedic knowledge</div></button>
+    <button class="kpi family-card" data-family="Upaniṣad"><div class="num">Upaniṣad</div><div class="lab">Philosophical inquiry into self, reality, knowledge and liberation</div></button>
+    <button class="kpi family-card" data-family="Itihāsa"><div class="num">Itihāsa</div><div class="lab">Rāmāyaṇa & Mahābhārata · epic narrative and dharma discourse</div></button>
+    <button class="kpi family-card" data-family="Purāṇa"><div class="num">Purāṇa</div><div class="lab">Cosmology, genealogy, theology, pilgrimage and devotional traditions</div></button>
+  </div>
+  <div id="scripture-list" class="section-head"><div><div class="section-kicker">Library index</div><h2>Choose a text family</h2></div><select id="scriptureFilter" class="select"><option>All</option><option>Veda</option><option>Upaniṣad</option><option>Itihāsa</option><option>Gītā</option><option>Yoga</option></select></div>
+  <div id="scriptureList" class="stack"></div>
+  <div id="reader" class="section-head"><div><div class="section-kicker">Long-form reader</div><h2>Manuscript mode</h2><p>Use this as a structured reader shell. The sample below deliberately separates Sanskrit/transliteration/meaning rather than pretending one translation is the original.</p></div></div>
+  <div class="reader"><div class="reader-nav"><button class="active" data-reader="opening">Opening</button><button data-reader="context">Context</button><button data-reader="verse">Verse</button><button data-reader="commentary">Commentary</button><button data-reader="reflection">Reflection</button></div><article id="manuscriptContent" class="manuscript"></article></div>
+  <div id="study-method" class="section-head"><div><div class="section-kicker">Study discipline</div><h2>A five-pass reading method</h2></div></div>
+  <div class="timeline"><div class="step"><b>Pass 1 · Read the passage</b><p>Do not begin by searching for a modern quote. Understand the immediate speaker, listener and situation.</p></div><div class="step"><b>Pass 2 · Locate the vocabulary</b><p>Identify terms such as ātman, dharma, yoga, brahman, prakṛti or mokṣa and keep their technical meaning visible.</p></div><div class="step"><b>Pass 3 · Compare translations</b><p>Compare at least two responsible translations and note where choices differ.</p></div><div class="step"><b>Pass 4 · Read a commentary</b><p>Commentaries reveal how a particular school builds an interpretation from the text.</p></div><div class="step"><b>Pass 5 · Reflect without rewriting the source</b><p>Personal application is valuable, but label it as application rather than claiming the ancient text explicitly says something it does not.</p></div></div>
+  <div class="section-head deep-dive"><div><div class="section-kicker">Deep archive</div><h2>How the textual layers fit together</h2></div></div>
+  <div class="grid3"><article class="panel"><h3>Saṃhitā</h3><p>Collections of mantras, hymns or ritual formulas. In Vedic study, preserve the distinction between the text itself and the ritual/philological interpretation attached later.</p></article><article class="panel"><h3>Brāhmaṇa</h3><p>Prose Vedic literature explaining ritual procedures, meanings and correspondences. It is not simply a commentary in the modern sense.</p></article><article class="panel"><h3>Āraṇyaka</h3><p>“Forest” texts associated with transitions between ritual and speculative modes of interpretation. Boundaries between textual layers are historically complex.</p></article><article class="panel"><h3>Upaniṣadic layer</h3><p>Texts concerned with knowledge, self, reality, ritual reinterpretation and liberation. “The Upaniṣads” are a large and diverse corpus, not one uniform philosophical book.</p></article><article class="panel"><h3>Sūtra & śāstra</h3><p>Compact aphoristic texts and systematic treatises often require a commentary tradition to unpack technical arguments.</p></article><article class="panel"><h3>Commentary</h3><p>Bhāṣya, ṭīkā and other commentarial genres preserve intellectual debates. A commentary should always be labeled by author, school and period.</p></article></div>
+  <div class="accordion"><details open><summary>Edition discipline</summary><div class="detail">A production scripture reader should store edition, recension where applicable, language, editor/translator, publication details and passage identifier. This prevents a later UI from presenting a paraphrase as if it were a critical text.</div></details><details><summary>Translation discipline</summary><div class="detail">Translations are interpretive acts. Where a Sanskrit term is technically important, show the original term and explain the translation choice rather than silently replacing it with one English equivalent.</div></details><details><summary>Commentary discipline</summary><div class="detail">When presenting a traditional commentary, identify its author and school. Do not merge Śaṅkara, Rāmānuja, Madhva or modern teachers into one anonymous “Hindu interpretation.”</div></details></div>
+</section>
+
+<section id="panchang" class="view">
+  <div class="section-head"><div><div class="section-kicker">Sacred time</div><h2>Pañcāṅga & Festival Observatory</h2><p>Explore the five limbs of traditional Hindu calendrical reckoning. Live astronomical values below are calculated from Sun/Moon positions; festival observance can require location, sunrise and tradition-specific rules.</p></div><button class="btn gold" id="locationBtn">⌖ Use my location</button></div>
+  <div class="sticky-nav"><a href="#today">Today</a><a href="#five-limbs">Five limbs</a><a href="#calendar">Calendar logic</a><a href="#festivals">Festivals</a><a href="#astronomy-note">Precision notes</a></div>
+  <div id="today" class="grid3"><div class="kpi"><div class="num" id="pTithi">—</div><div class="lab">Tithi</div></div><div class="kpi"><div class="num" id="pVara">—</div><div class="lab">Vāra (weekday)</div></div><div class="kpi"><div class="num" id="pNak">—</div><div class="lab">Nakṣatra</div></div><div class="kpi"><div class="num" id="pYoga">—</div><div class="lab">Yoga</div></div><div class="kpi"><div class="num" id="pKarana">—</div><div class="lab">Karaṇa</div></div><div class="kpi"><div class="num" id="pSunrise">—</div><div class="lab">Local sunrise</div></div></div>
+  <div class="panel" style="margin-top:14px"><div class="map-tools"><button class="btn gold" id="todayBtn">☀ Today</button><button class="btn" id="refreshPanchang">↻ Refresh calculation</button><span class="tag" id="pLocationLabel">Location: New Delhi (default)</span></div><div class="status-line" id="panchangStatus">Set your location to make sunrise and local-day calculations location aware.</div></div>
+  <div class="panel" style="margin-top:18px"><div class="searchline"><input type="date" id="datePicker"><select id="panchangMode" class="select"><option>Astronomical calculation</option><option>Conceptual study mode</option></select></div><div id="panchangDetail" class="result">Choose a date to inspect the astronomical Sun/Moon relationship used for tithi, nakṣatra and yoga. Festival observance still depends on regional calendrical rules.</div></div>
+  <div id="five-limbs" class="section-head"><div><div class="section-kicker">The five limbs</div><h2>Pañcāṅga, explained precisely</h2></div></div>
+  <div class="grid3"><article class="panel"><h3>1 · Tithi</h3><p>A lunar day defined by the angular separation of the Moon and Sun. There are 30 tithis in a synodic lunar cycle; each spans 12° of separation. Tithis are grouped into śukla and kṛṣṇa pakṣa.</p></article><article class="panel"><h3>2 · Vāra</h3><p>The weekday: Ravi-vāra (Sunday), Soma-vāra (Monday), Maṅgala-vāra (Tuesday), Budha-vāra (Wednesday), Guru-vāra (Thursday), Śukra-vāra (Friday), Śani-vāra (Saturday).</p></article><article class="panel"><h3>3 · Nakṣatra</h3><p>The ecliptic is divided into 27 equal sectors of 13°20′. The Moon’s sidereal position is conventionally associated with one nakṣatra; traditions can use specific ayanāṃśa conventions.</p></article><article class="panel"><h3>4 · Yoga</h3><p>In the pañcāṅga sense, yoga is calculated from the sum of the Sun and Moon’s longitudes, divided into 27 sectors of 13°20′. This is distinct from the philosophical system of Yoga.</p></article><article class="panel"><h3>5 · Karaṇa</h3><p>A half-tithi, corresponding to 6° of Sun–Moon angular separation. The karaṇa system contains repeating and fixed components with specific calendrical rules.</p></article><article class="panel"><h3>Why sunrise matters</h3><p>Traditional day-bound observances often use local sunrise as a boundary. Therefore a festival cannot safely be assigned by simply looking at a midnight-to-midnight civil calendar date.</p></article></div>
+  <div id="calendar" class="section-head"><div><div class="section-kicker">Calendar logic</div><h2>Why “the Hindu calendar” is not one single table</h2></div></div>
+  <div class="table-wrap"><table class="table"><thead><tr><th>Layer</th><th>Question</th><th>Typical source of variation</th></tr></thead><tbody><tr><td>Lunar month</td><td>Which month is this?</td><td>Amānta vs pūrṇimānta month naming; regional conventions.</td></tr><tr><td>Adhika māsa</td><td>How are lunar and solar cycles reconciled?</td><td>Intercalary month rules differ from simple fixed-month calendars.</td></tr><tr><td>Festival tithi</td><td>Which tithi governs observance?</td><td>Festival-specific sunrise, pradoṣa, madhyāhna or other timing rules.</td></tr><tr><td>Local time</td><td>When does the observance occur?</td><td>Longitude, latitude, timezone, sunrise/sunset and local tradition.</td></tr></tbody></table></div>
+  <div id="festivals" class="section-head"><div><div class="section-kicker">Festival atlas</div><h2>Major observance families</h2></div></div>
+  <div class="grid3"><div class="panel festival-card" data-festival="Dīpāvalī"><h3>Dīpāvalī</h3><p>A festival complex associated with lamps, prosperity, renewal and several regional narratives. Lakṣmī pūjā, Govardhana Pūjā, Bhāi Dūj and other observances can occupy different days within the wider period.</p></div><div class="panel festival-card" data-festival="Navarātri"><h3>Navarātri</h3><p>A nine-night festival period with major regional forms such as Durgā Pūjā in Bengal, Garbā traditions in Gujarat and Rāmlīlā-linked observances in North India.</p></div><div class="panel festival-card" data-festival="Mahāśivarātri"><h3>Mahāśivarātri</h3><p>A major Śaiva observance associated with Śiva. Ritual details vary, including fasting, night vigil and abhiṣeka traditions.</p></div><div class="panel festival-card" data-festival="Janmāṣṭamī"><h3>Janmāṣṭamī</h3><p>Celebrates Kṛṣṇa’s birth in Vaiṣṇava traditions. Timing and midnight observance rules can differ by calendar and location.</p></div><div class="panel festival-card" data-festival="Rāma Navamī"><h3>Rāma Navamī</h3><p>Associated with the birth of Rāma. The observance is tied to a specific tithi and commonly includes worship, recitation and temple celebrations.</p></div><div class="panel festival-card" data-festival="Holi"><h3>Holi</h3><p>A spring festival complex with regional ritual and social forms. Holikā Dahana and the following day’s color celebrations are distinct components.</p></div></div>
+  <div id="astronomy-note" class="section-head"><div><div class="section-kicker">Precision note</div><h2>A good calendar tells you what it knows</h2></div></div>
+  <div class="panel"><p><strong>Important:</strong> astronomical tithi/nakṣatra/yoga values and a temple’s official festival calendar are related but not identical. This interface uses astronomical calculations as an educational layer. For a real ritual observance, follow the calendar published by the relevant temple, lineage or regional pañcāṅga authority.</p></div>
+  <div class="section-head deep-dive"><div><div class="section-kicker">Deep calendrical archive</div><h2>What a precise pañcāṅga calculation must keep separate</h2></div></div>
+  <div class="table-wrap"><table class="table"><thead><tr><th>Concept</th><th>Technical definition</th><th>Practical implication</th></tr></thead><tbody><tr><td>Tithi</td><td>Each 12° of geocentric ecliptic longitude difference between Moon and Sun.</td><td>A tithi can begin or end at a clock time that does not match midnight.</td></tr><tr><td>Nakṣatra</td><td>The Moon's position in one of 27 equal 13°20′ sectors in a sidereal framework.</td><td>A calculation must state the sidereal convention/ayanāṃśa used.</td></tr><tr><td>Yoga</td><td>The sum of Sun and Moon longitudes divided into 27 equal sectors.</td><td>Do not confuse pañcāṅga yoga with Patañjali's Yoga system.</td></tr><tr><td>Karaṇa</td><td>Half of a tithi, 6° of angular separation.</td><td>Festival or muhūrta rules may depend on the exact karaṇa boundary.</td></tr><tr><td>Sunrise boundary</td><td>Local solar rise computed for a coordinate and date.</td><td>Traditional observance can assign a tithi to the civil day according to local sunrise rules.</td></tr></tbody></table></div>
+  <div class="accordion"><details open><summary>Why one online calendar can disagree with another</summary><div class="detail">Differences can arise from location, timezone, sunrise definition, ayanāṃśa, lunar-month naming, festival-specific rules, rounding and regional/sampradāya convention. A disagreement is not automatically a software bug.</div></details><details><summary>What this portal deliberately does not claim</summary><div class="detail">The astronomical layer is not presented as a universal temple calendar. For ritual decisions, the relevant temple, lineage or regional pañcāṅga remains the authoritative layer to consult.</div></details></div>
+</section>
+
+<section id="temples" class="view">
+
+  <!-- =========================================================
+       TEMPLE EXPLORER
+       Self-contained version
+       No Leaflet / OpenStreetMap / API / Geolocation required
+       ========================================================= -->
+
+  <div class="section-head">
+    <div>
+      <div class="section-kicker">BHĀRATA PILGRIMAGE ATLAS</div>
+      <h2>Temple Explorer</h2>
+      <p>
+        Explore major Hindu sacred centres through geography, architecture,
+        pilgrimage traditions and historical context.
+      </p>
+    </div>
+  </div>
+
+
+  <!-- INTERNAL NAVIGATION -->
+  <div class="sticky-nav">
+    <a href="#sx-atlas">Atlas</a>
+    <a href="#sx-temples">Temples</a>
+    <a href="#sx-architecture">Architecture</a>
+    <a href="#sx-pilgrimage">Pilgrimage</a>
+    <a href="#sx-research">Research</a>
+  </div>
+
+
+  <!-- =========================================================
+       SACRED GEOGRAPHY
+       ========================================================= -->
+
+  <div id="sx-atlas" class="panel">
+
+    <div class="section-head" style="margin:0 0 18px;">
+      <div>
+        <div class="section-kicker">INTERACTIVE ATLAS</div>
+        <h2 style="font-size:22px;">Sacred Geography of India</h2>
+        <p style="margin-top:6px;">
+          Select a sacred centre from the map or search the temple index.
+        </p>
+      </div>
+    </div>
+
+
+    <!-- SEARCH -->
+    <div style="
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-bottom:18px;
+    ">
+
+      <input
+        id="sxSearch"
+        class="searchline"
+        type="text"
+        placeholder="Search temple, deity, city or state…"
+        autocomplete="off"
+        style="
+          flex:1;
+          min-width:220px;
+          margin:0;
+        "
+      >
+
+      <button class="btn" id="sxClearSearch">
+        Clear
+      </button>
+
+    </div>
+
+
+    <!-- REGION FILTERS -->
+    <div style="
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin-bottom:18px;
+    ">
+
+      <button class="btn sx-region active" data-region="all">
+        All India
+      </button>
+
+      <button class="btn sx-region" data-region="north">
+        North
+      </button>
+
+      <button class="btn sx-region" data-region="west">
+        West
+      </button>
+
+      <button class="btn sx-region" data-region="east">
+        East
+      </button>
+
+      <button class="btn sx-region" data-region="south">
+        South
+      </button>
+
+    </div>
+
+
+    <!-- SELF-CONTAINED MAP -->
+    <div
+      id="sxMap"
+      style="
+        position:relative;
+        width:100%;
+        min-height:560px;
+        overflow:hidden;
+        border:1px solid rgba(210,155,70,.25);
+        border-radius:16px;
+        background:
+          radial-gradient(circle at 50% 45%, rgba(180,120,40,.10), transparent 45%),
+          linear-gradient(145deg,#1b120d,#100b08);
+      "
+    >
+
+      <!-- GRID -->
+      <div style="
+        position:absolute;
+        inset:0;
+        opacity:.12;
+        background-image:
+          linear-gradient(rgba(220,170,90,.4) 1px,transparent 1px),
+          linear-gradient(90deg,rgba(220,170,90,.4) 1px,transparent 1px);
+        background-size:50px 50px;
+        pointer-events:none;
+      "></div>
+
+
+      <!-- INDIA SILHOUETTE / SCHEMATIC -->
+      <svg
+        viewBox="0 0 500 650"
+        preserveAspectRatio="xMidYMid meet"
+        style="
+          position:absolute;
+          width:min(70%,500px);
+          height:95%;
+          left:50%;
+          top:50%;
+          transform:translate(-50%,-50%);
+          opacity:.9;
+        "
+      >
+
+        <!-- India outline — intentionally schematic for atlas visualization -->
+        <path
+          d="
+          M218 34
+          L249 48
+          L268 73
+          L286 88
+          L303 119
+          L321 138
+          L337 167
+          L356 185
+          L365 214
+          L389 239
+          L401 270
+          L393 300
+          L408 323
+          L395 351
+          L375 371
+          L364 400
+          L350 427
+          L338 454
+          L326 487
+          L308 518
+          L294 553
+          L277 594
+          L259 620
+          L241 594
+          L226 558
+          L210 530
+          L196 498
+          L181 464
+          L165 434
+          L150 405
+          L136 377
+          L117 351
+          L101 324
+          L86 293
+          L78 264
+          L91 237
+          L106 215
+          L120 187
+          L138 166
+          L151 139
+          L168 119
+          L176 89
+          L195 66
+          Z
+        "
+        fill="rgba(196,142,67,.10)"
+        stroke="rgba(221,171,94,.55)"
+        stroke-width="2"
+      ></path>
+
+
+      <!-- MAP LABEL -->
+      <text
+        x="250"
+        y="320"
+        text-anchor="middle"
+        fill="rgba(235,201,143,.42)"
+        font-size="17"
+        font-family="Cinzel,serif"
+        letter-spacing="4"
+      >
+        BHĀRATA
+      </text>
+
+
+      <!-- TEMPLE MARKERS -->
+
+      <button
+        class="sx-pin"
+        data-temple="kashi"
+        title="Kashi Vishwanath"
+        style="left:45%;top:27%;"
+      >✦</button>
+
+      <button
+        class="sx-pin"
+        data-temple="kedarnath"
+        title="Kedarnath"
+        style="left:39%;top:17%;"
+      >✦</button>
+
+      <button
+        class="sx-pin"
+        data-temple="somnath"
+        title="Somnath"
+        style="left:25%;top:43%;"
+      >✦</button>
+
+      <button
+        class="sx-pin"
+        data-temple="jagannath"
+        title="Jagannath Puri"
+        style="left:61%;top:42%;"
+      >✦</button>
+
+      <button
+        class="sx-pin"
+        data-temple="meenakshi"
+        title="Meenakshi Amman"
+        style="left:48%;top:73%;"
+      >✦</button>
+
+      <button
+        class="sx-pin"
+        data-temple="rameswaram"
+        title="Ramanathaswamy"
+        style="left:54%;top:82%;"
+      >✦</button>
+
+      <button
+        class="sx-pin"
+        data-temple="tirupati"
+        title="Tirumala Venkateswara"
+        style="left:52%;top:65%;"
+      >✦</button>
+
+      <button
+        class="sx-pin"
+        data-temple="dwarka"
+        title="Dwarkadhish"
+        style="left:20%;top:34%;"
+      >✦</button>
+
+    </div>
+
+
+    <!-- SELECTED TEMPLE -->
+    <div
+      id="sxSelected"
+      style="
+        margin-top:15px;
+        padding:16px;
+        border:1px solid rgba(210,155,70,.22);
+        border-radius:12px;
+        background:rgba(210,155,70,.045);
+      "
+    >
+      <div class="section-kicker">SELECT A SACRED CENTRE</div>
+
+      <h3 style="margin:5px 0 6px;">
+        Explore the atlas
+      </h3>
+
+      <p style="margin:0;">
+        Click any ✦ marker to view the temple's location, tradition and
+        significance.
+      </p>
+    </div>
+
+  </div>
+
+
+  <!-- =========================================================
+       TEMPLE INDEX
+       ========================================================= -->
+
+  <div id="sx-temples" class="section-head">
+
+    <div>
+      <div class="section-kicker">TEMPLE INDEX</div>
+      <h2>Selected Pilgrimage Centres</h2>
+    </div>
+
+  </div>
+
+
+  <div
+    id="sxTempleGrid"
+    class="card-grid"
+  >
+
+    <!-- KASHI -->
+    <article
+      class="panel sx-temple-card"
+      data-region="north"
+      data-search="kashi vishwanath varanasi uttar pradesh shiva jyotirlinga shaiva"
+      data-temple-id="kashi"
+    >
+      <div class="section-kicker">UTTAR PRADESH · NORTH</div>
+
+      <h3>Kashi Vishwanath</h3>
+
+      <p>
+        <strong>Deity:</strong> Śiva ·
+        <strong>Tradition:</strong> Śaiva
+      </p>
+
+      <p>
+        Located in Varanasi, Kāśī is one of the major sacred cities of
+        Hinduism and an important centre of Śaiva pilgrimage.
+      </p>
+
+      <button class="btn sx-view" data-temple="kashi">
+        Explore
+      </button>
+    </article>
+
+
+    <!-- KEDARNATH -->
+    <article
+      class="panel sx-temple-card"
+      data-region="north"
+      data-search="kedarnath uttarakhand shiva jyotirlinga himalaya char dham shaiva"
+      data-temple-id="kedarnath"
+    >
+      <div class="section-kicker">UTTARAKHAND · NORTH</div>
+
+      <h3>Kedarnath</h3>
+
+      <p>
+        <strong>Deity:</strong> Śiva ·
+        <strong>Tradition:</strong> Śaiva
+      </p>
+
+      <p>
+        A Himalayan pilgrimage centre associated with Śiva and traditionally
+        included among the twelve Jyotirliṅgas.
+      </p>
+
+      <button class="btn sx-view" data-temple="kedarnath">
+        Explore
+      </button>
+    </article>
+
+
+    <!-- SOMNATH -->
+    <article
+      class="panel sx-temple-card"
+      data-region="west"
+      data-search="somnath gujarat shiva jyotirlinga arabian sea shaiva"
+      data-temple-id="somnath"
+    >
+      <div class="section-kicker">GUJARAT · WEST</div>
+
+      <h3>Somnath</h3>
+
+      <p>
+        <strong>Deity:</strong> Śiva ·
+        <strong>Tradition:</strong> Śaiva
+      </p>
+
+      <p>
+        A major pilgrimage centre at Prabhas Patan on the western coast,
+        traditionally associated with the first of the twelve Jyotirliṅgas.
+      </p>
+
+      <button class="btn sx-view" data-temple="somnath">
+        Explore
+      </button>
+    </article>
+
+
+    <!-- DWARKA -->
+    <article
+      class="panel sx-temple-card"
+      data-region="west"
+      data-search="dwarka dwarkadhish gujarat krishna vishnu vaishnava char dham"
+      data-temple-id="dwarka"
+    >
+      <div class="section-kicker">GUJARAT · WEST</div>
+
+      <h3>Dwarkadhish Temple</h3>
+
+      <p>
+        <strong>Deity:</strong> Kṛṣṇa ·
+        <strong>Tradition:</strong> Vaiṣṇava
+      </p>
+
+      <p>
+        Dwārakā is an important Vaiṣṇava pilgrimage centre and is traditionally
+        associated with one of the Char Dham pilgrimage sites.
+      </p>
+
+      <button class="btn sx-view" data-temple="dwarka">
+        Explore
+      </button>
+    </article>
+
+
+    <!-- JAGANNATH -->
+    <article
+      class="panel sx-temple-card"
+      data-region="east"
+      data-search="jagannath puri odisha krishna vishnu vaishnava ratha yatra char dham"
+      data-temple-id="jagannath"
+    >
+      <div class="section-kicker">ODISHA · EAST</div>
+
+      <h3>Jagannath Temple</h3>
+
+      <p>
+        <strong>Deity:</strong> Jagannātha ·
+        <strong>Tradition:</strong> Vaiṣṇava
+      </p>
+
+      <p>
+        Puri is a major pilgrimage centre associated with Jagannātha and the
+        annual Ratha Yātrā tradition.
+      </p>
+
+      <button class="btn sx-view" data-temple="jagannath">
+        Explore
+      </button>
+    </article>
+
+
+    <!-- TIRUPATI -->
+    <article
+      class="panel sx-temple-card"
+      data-region="south"
+      data-search="tirupati tirumala venkateswara andhra pradesh vishnu vaishnava"
+      data-temple-id="tirupati"
+    >
+      <div class="section-kicker">ANDHRA PRADESH · SOUTH</div>
+
+      <h3>Tirumala Venkateswara</h3>
+
+      <p>
+        <strong>Deity:</strong> Venkateśvara ·
+        <strong>Tradition:</strong> Vaiṣṇava
+      </p>
+
+      <p>
+        One of India's most prominent Vaiṣṇava pilgrimage centres,
+        located in the Tirumala hills near Tirupati.
+      </p>
+
+      <button class="btn sx-view" data-temple="tirupati">
+        Explore
+      </button>
+    </article>
+
+
+    <!-- MEENAKSHI -->
+    <article
+      class="panel sx-temple-card"
+      data-region="south"
+      data-search="meenakshi madurai tamil nadu shiva parvati shakti shaiva"
+      data-temple-id="meenakshi"
+    >
+      <div class="section-kicker">TAMIL NADU · SOUTH</div>
+
+      <h3>Meenakshi Amman Temple</h3>
+
+      <p>
+        <strong>Deities:</strong> Meenakshi & Sundareśvara
+      </p>
+
+      <p>
+        A major temple complex in Madurai, distinguished by its monumental
+        gateways, sculptural program and relationship with the historic city.
+      </p>
+
+      <button class="btn sx-view" data-temple="meenakshi">
+        Explore
+      </button>
+    </article>
+
+
+    <!-- RAMESWARAM -->
+    <article
+      class="panel sx-temple-card"
+      data-region="south"
+      data-search="rameswaram ramanathaswamy tamil nadu shiva jyotirlinga char dham"
+      data-temple-id="rameswaram"
+    >
+      <div class="section-kicker">TAMIL NADU · SOUTH</div>
+
+      <h3>Ramanathaswamy Temple</h3>
+
+      <p>
+        <strong>Deity:</strong> Śiva ·
+        <strong>Tradition:</strong> Śaiva
+      </p>
+
+      <p>
+        A major pilgrimage centre known for its extensive corridors,
+        sacred water spaces and association with Rāmeśvaram.
+      </p>
+
+      <button class="btn sx-view" data-temple="rameswaram">
+        Explore
+      </button>
+    </article>
+
+  </div>
+
+
+  <!-- NO RESULTS -->
+  <div
+    id="sxNoResults"
+    class="panel"
+    style="display:none;text-align:center;margin-top:15px;"
+  >
+    <h3>No temples found</h3>
+    <p>
+      Try another temple, deity, city, state or region.
+    </p>
+  </div>
+
+
+  <!-- =========================================================
+       ARCHITECTURE
+       ========================================================= -->
+
+  <div id="sx-architecture" class="section-head">
+
+    <div>
+      <div class="section-kicker">BUILT SACRED SPACE</div>
+      <h2>How to Read a Hindu Temple</h2>
+    </div>
+
+  </div>
+
+
+  <div class="grid3">
+
+    <div class="panel">
+      <h3>Garbha-gṛha</h3>
+      <p>
+        The sanctum or “womb chamber” containing the principal deity,
+        image or emblem. It forms the ritual centre of many temple plans.
+      </p>
+    </div>
+
+    <div class="panel">
+      <h3>Maṇḍapa</h3>
+      <p>
+        A pillared hall used for gatherings, ritual activity, music,
+        processions and other temple functions.
+      </p>
+    </div>
+
+    <div class="panel">
+      <h3>Śikhara / Vimāna</h3>
+      <p>
+        The superstructure associated with the sanctum. Terminology and
+        architectural forms vary significantly between regions.
+      </p>
+    </div>
+
+    <div class="panel">
+      <h3>Prākāra</h3>
+      <p>
+        Enclosure walls and precincts that organize movement and different
+        levels of sacred space.
+      </p>
+    </div>
+
+    <div class="panel">
+      <h3>Gopura</h3>
+      <p>
+        Monumental gateway towers particularly prominent in large South
+        Indian temple complexes.
+      </p>
+    </div>
+
+    <div class="panel">
+      <h3>Pradakṣiṇā</h3>
+      <p>
+        Ritual circumambulation around a sacred object or space, commonly
+        performed clockwise in many Hindu traditions.
+      </p>
+    </div>
+
+  </div>
+
+
+  <!-- =========================================================
+       PILGRIMAGE
+       ========================================================= -->
+
+  <div id="sx-pilgrimage" class="section-head">
+
+    <div>
+      <div class="section-kicker">PILGRIMAGE INTELLIGENCE</div>
+      <h2>A Yātrā Is More Than a Route</h2>
+    </div>
+
+  </div>
+
+
+  <div class="grid2">
+
+    <div class="panel">
+      <h3>Ritual Dimension</h3>
+      <p>
+        Pilgrimage may involve darśana, bathing, vows, offerings,
+        circumambulation, recitation, fasting or service. Exact practices
+        depend on the temple and tradition.
+      </p>
+    </div>
+
+    <div class="panel">
+      <h3>Geographical Dimension</h3>
+      <p>
+        Sacred geography connects temples with rivers, mountains,
+        pilgrimage routes, sacred towns and regional networks.
+      </p>
+    </div>
+
+    <div class="panel">
+      <h3>Social Dimension</h3>
+      <p>
+        Pilgrimage historically connects communities, markets, monasteries,
+        festivals, hospitality systems and local economies.
+      </p>
+    </div>
+
+    <div class="panel">
+      <h3>Living Tradition</h3>
+      <p>
+        A temple is not only an architectural monument. It may remain an
+        active centre of worship, festivals, community activity and cultural
+        transmission.
+      </p>
+    </div>
+
+  </div>
+
+
+  <!-- =========================================================
+       RESEARCH
+       ========================================================= -->
+
+  <div id="sx-research" class="section-head">
+
+    <div>
+      <div class="section-kicker">RESEARCH METHOD</div>
+      <h2>How to Research a Temple</h2>
+    </div>
+
+  </div>
+
+
+  <div class="table-wrap">
+
+    <table class="table">
+
+      <thead>
+        <tr>
+          <th>Layer</th>
+          <th>Record</th>
+          <th>Keep Separate</th>
+        </tr>
+      </thead>
+
+      <tbody>
+
+        <tr>
+          <td>Tradition</td>
+          <td>
+            Deity, sampradāya, major rituals and theological associations
+          </td>
+          <td>
+            Assuming every temple belongs to one simple category
+          </td>
+        </tr>
+
+        <tr>
+          <td>History</td>
+          <td>
+            Foundation, patronage, inscriptions, historical phases and renovations
+          </td>
+          <td>
+            Religious legends and archaeological evidence
+          </td>
+        </tr>
+
+        <tr>
+          <td>Architecture</td>
+          <td>
+            Plan, sanctum, tower, gateways, sculpture and construction phases
+          </td>
+          <td>
+            Applying one architectural vocabulary to all Indian temples
+          </td>
+        </tr>
+
+        <tr>
+          <td>Ritual</td>
+          <td>
+            Daily worship, festivals, processions, offerings and restrictions
+          </td>
+          <td>
+            Assuming tourist descriptions represent complete ritual practice
+          </td>
+        </tr>
+
+      </tbody>
+
+    </table>
+
+  </div>
+
+
+  <!-- =========================================================
+       DEEP DIVE
+       ========================================================= -->
+
+  <div class="section-head deep-dive">
+
+    <div>
+      <div class="section-kicker">DEEP TEMPLE ARCHIVE</div>
+      <h2>Four Evidence Layers</h2>
+    </div>
+
+  </div>
+
+
+  <div class="grid2">
+
+    <article class="panel">
+      <h3>01 · Textual Layer</h3>
+      <p>
+        Separate temple legends, sthala-māhātmya, theological texts,
+        Āgamic references, liturgical material and inscriptions instead
+        of treating every source as identical evidence.
+      </p>
+    </article>
+
+    <article class="panel">
+      <h3>02 · Material Layer</h3>
+      <p>
+        Examine the physical complex: plan, masonry, sculpture, iconography,
+        inscriptions, construction phases and conservation history.
+      </p>
+    </article>
+
+    <article class="panel">
+      <h3>03 · Ritual Layer</h3>
+      <p>
+        Record temple-specific worship, utsava images, processions, offerings
+        and festival cycles using reliable temple-specific information.
+      </p>
+    </article>
+
+    <article class="panel">
+      <h3>04 · Living Institution</h3>
+      <p>
+        Study the temple as a continuing institution: shrine, pilgrimage
+        centre, cultural archive, community space and economic network.
+      </p>
+    </article>
+
+  </div>
+
+
+  <!-- =========================================================
+       NOTES
+       ========================================================= -->
+
+  <div class="accordion">
+
+    <details open>
+
+      <summary>
+        Why is the atlas schematic rather than a live map?
+      </summary>
+
+      <div class="detail">
+        This portal prioritizes reliability over a dependency on external
+        map-tile servers. The atlas provides geographic orientation and
+        temple discovery without requiring an API, map token, geocoder or
+        third-party tile server.
+      </div>
+
+    </details>
+
+
+    <details>
+
+      <summary>
+        Does a map location prove a temple's historical importance?
+      </summary>
+
+      <div class="detail">
+        No. A geographic marker identifies a location only. Historical,
+        archaeological and theological claims require separate evidence.
+      </div>
+
+    </details>
+
+
+    <details>
+
+      <summary>
+        Why can different temples have similar names?
+      </summary>
+
+      <div class="detail">
+        Sanskrit and regional religious names are frequently reused.
+        Temple identification should therefore include city, district,
+        state and other distinguishing information.
+      </div>
+
+    </details>
+
+  </div>
+
+
+  <!-- =========================================================
+       SELF-CONTAINED JAVASCRIPT
+       ========================================================= -->
+
+  <script>
+  (() => {
+
+    /*
+      Everything below is scoped to "sx".
+      It does not depend on Leaflet, OpenStreetMap,
+      external APIs or any other section of the website.
+    */
+
+    const searchInput = document.getElementById("sxSearch");
+    const clearButton = document.getElementById("sxClearSearch");
+    const regionButtons = document.querySelectorAll(".sx-region");
+    const templeCards = document.querySelectorAll(".sx-temple-card");
+    const pins = document.querySelectorAll(".sx-pin");
+    const exploreButtons = document.querySelectorAll(".sx-view");
+    const selectedBox = document.getElementById("sxSelected");
+    const noResults = document.getElementById("sxNoResults");
+
+    let currentRegion = "all";
+
+
+    const templeData = {
+
+      kashi: {
+        name: "Kashi Vishwanath",
+        place: "Varanasi, Uttar Pradesh",
+        deity: "Śiva",
+        tradition: "Śaiva",
+        description:
+          "A major sacred centre of Kāśī associated with Śiva and one of the most important pilgrimage landscapes in North India."
+      },
+
+      kedarnath: {
+        name: "Kedarnath",
+        place: "Uttarakhand",
+        deity: "Śiva",
+        tradition: "Śaiva",
+        description:
+          "A Himalayan pilgrimage centre associated with Śiva and traditionally counted among the twelve Jyotirliṅgas."
+      },
+
+      somnath: {
+        name: "Somnath",
+        place: "Prabhas Patan, Gujarat",
+        deity: "Śiva",
+        tradition: "Śaiva",
+        description:
+          "A major western Indian pilgrimage centre traditionally associated with one of the twelve Jyotirliṅgas."
+      },
+
+      dwarka: {
+        name: "Dwarkadhish Temple",
+        place: "Dwarka, Gujarat",
+        deity: "Kṛṣṇa",
+        tradition: "Vaiṣṇava",
+        description:
+          "A major Vaiṣṇava pilgrimage centre traditionally associated with Dwārakā and the Char Dham tradition."
+      },
+
+      jagannath: {
+        name: "Jagannath Temple",
+        place: "Puri, Odisha",
+        deity: "Jagannātha",
+        tradition: "Vaiṣṇava",
+        description:
+          "A major pilgrimage centre associated with Jagannātha and the annual Ratha Yātrā tradition."
+      },
+
+      tirupati: {
+        name: "Tirumala Venkateswara",
+        place: "Tirumala, Andhra Pradesh",
+        deity: "Venkateśvara",
+        tradition: "Vaiṣṇava",
+        description:
+          "A major Vaiṣṇava pilgrimage centre located in the Tirumala hills near Tirupati."
+      },
+
+      meenakshi: {
+        name: "Meenakshi Amman Temple",
+        place: "Madurai, Tamil Nadu",
+        deity: "Meenakshi & Sundareśvara",
+        tradition: "Śaiva / Śākta",
+        description:
+          "A major temple complex in Madurai known for its monumental gateways, sculpture and urban sacred landscape."
+      },
+
+      rameswaram: {
+        name: "Ramanathaswamy Temple",
+        place: "Rameswaram, Tamil Nadu",
+        deity: "Śiva",
+        tradition: "Śaiva",
+        description:
+          "A major pilgrimage centre known for its extensive corridors and association with the Rāmeśvaram pilgrimage tradition."
+      }
+
+    };
+
+
+    function showTemple(id) {
+
+      const temple = templeData[id];
+
+      if (!temple) return;
+
+      selectedBox.innerHTML = `
+        <div class="section-kicker">SELECTED SACRED CENTRE</div>
+
+        <h3 style="margin:5px 0 6px;">
+          ${temple.name}
+        </h3>
+
+        <p style="margin:0 0 6px;">
+          <strong>${temple.place}</strong>
+        </p>
+
+        <p style="margin:0 0 6px;">
+          ${temple.deity} · ${temple.tradition}
+        </p>
+
+        <p style="margin:0 0 14px;">
+          ${temple.description}
+        </p>
+
+        <button
+          class="btn"
+          onclick="window.open(
+            'https://www.google.com/maps/search/?api=1&query='
+            + encodeURIComponent('${temple.name}, ${temple.place}'),
+            '_blank'
+          )"
+        >
+          Open location
+        </button>
+      `;
+
+      selectedBox.scrollIntoView({
+        behavior: "smooth",
+        block: "nearest"
+      });
+
+    }
+
+
+    /* MAP PINS */
+
+    pins.forEach(pin => {
+
+      pin.addEventListener("click", () => {
+
+        const id = pin.dataset.temple;
+
+        showTemple(id);
+
+        pins.forEach(p => {
+          p.classList.remove("selected");
+        });
+
+        pin.classList.add("selected");
+
+      });
+
+    });
+
+
+    /* EXPLORE BUTTONS */
+
+    exploreButtons.forEach(button => {
+
+      button.addEventListener("click", () => {
+
+        const id = button.dataset.temple;
+
+        showTemple(id);
+
+        const pin = document.querySelector(
+          `.sx-pin[data-temple="${id}"]`
+        );
+
+        if (pin) {
+
+          pins.forEach(p => {
+            p.classList.remove("selected");
+          });
+
+          pin.classList.add("selected");
+
+        }
+
+      });
+
+    });
+
+
+    /* SEARCH + REGION FILTER */
+
+    function filterTemples() {
+
+      const query =
+        searchInput.value
+          .trim()
+          .toLowerCase();
+
+      let visibleCount = 0;
+
+      templeCards.forEach(card => {
+
+        const region =
+          card.dataset.region;
+
+        const searchableText =
+          card.dataset.search.toLowerCase();
+
+        const regionMatch =
+          currentRegion === "all" ||
+          region === currentRegion;
+
+        const searchMatch =
+          query === "" ||
+          searchableText.includes(query);
+
+        const visible =
+          regionMatch && searchMatch;
+
+        card.style.display =
+          visible ? "" : "none";
+
+        if (visible) {
+          visibleCount++;
+        }
+
+      });
+
+      noResults.style.display =
+        visibleCount === 0
+          ? "block"
+          : "none";
+
+    }
+
+
+    searchInput.addEventListener(
+      "input",
+      filterTemples
+    );
+
+
+    clearButton.addEventListener(
+      "click",
+      () => {
+
+        searchInput.value = "";
+
+        currentRegion = "all";
+
+        regionButtons.forEach(button => {
+          button.classList.remove("active");
+        });
+
+        document
+          .querySelector('.sx-region[data-region="all"]')
+          .classList.add("active");
+
+        filterTemples();
+
+      }
+    );
+
+
+    /* REGION BUTTONS */
+
+    regionButtons.forEach(button => {
+
+      button.addEventListener("click", () => {
+
+        currentRegion =
+          button.dataset.region;
+
+        regionButtons.forEach(btn => {
+          btn.classList.remove("active");
+        });
+
+        button.classList.add("active");
+
+        filterTemples();
+
+      });
+
+    });
+
+
+    /* INITIAL STATE */
+
+    filterTemples();
+
+
+    /* =========================================================
+       SMALL LOCAL STYLES
+       ========================================================= */
+
+    const style = document.createElement("style");
+
+    style.textContent = `
+
+      .sx-pin {
+        position:absolute;
+        transform:translate(-50%,-50%);
+        width:34px;
+        height:34px;
+        border-radius:50%;
+        border:1px solid rgba(235,190,105,.65);
+        background:#21140d;
+        color:#e7b963;
+        cursor:pointer;
+        font-size:16px;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        box-shadow:0 0 0 4px rgba(190,130,50,.08);
+        transition:
+          transform .18s ease,
+          background .18s ease,
+          box-shadow .18s ease;
+        z-index:5;
+      }
+
+      .sx-pin:hover {
+        transform:translate(-50%,-50%) scale(1.18);
+        background:#392313;
+        box-shadow:
+          0 0 0 7px rgba(190,130,50,.10),
+          0 0 25px rgba(220,160,70,.20);
+      }
+
+      .sx-pin.selected {
+        transform:translate(-50%,-50%) scale(1.18);
+        background:#7b5425;
+        color:#fff2cf;
+        box-shadow:
+          0 0 0 7px rgba(220,170,90,.14),
+          0 0 30px rgba(220,170,90,.25);
+      }
+
+      .sx-region.active {
+        background:rgba(190,130,50,.18);
+        border-color:rgba(220,170,90,.55);
+      }
+
+      .sx-temple-card {
+        transition:
+          transform .18s ease,
+          border-color .18s ease;
+      }
+
+      .sx-temple-card:hover {
+        transform:translateY(-3px);
+        border-color:rgba(220,170,90,.35);
+      }
+
+      @media (max-width:700px) {
+
+        #sxMap {
+          min-height:460px !important;
+        }
+
+        #sxMap svg {
+          width:95% !important;
+        }
+
+        .sx-pin {
+          width:30px;
+          height:30px;
+          font-size:14px;
+        }
+
+      }
+
+    `;
+
+    document.head.appendChild(style);
+
+  })();
+  </script>
+
+</section>
+
+<section id="philosophy" class="view">
+  <div class="section-head"><div><div class="section-kicker">Darśana · दृष्टि</div><h2>Philosophy & Yoga</h2><p>Study the systems as arguments: what is real, what is the self, what causes bondage, what counts as knowledge and what constitutes liberation.</p></div></div>
+  <div class="sticky-nav"><a href="#six-darshanas">Six darśanas</a><a href="#core-terms">Core terms</a><a href="#yoga">Yoga</a><a href="#paths">Paths</a><a href="#compare-phil">Compare</a></div>
+  <div id="six-darshanas" class="section-head"><div><div class="section-kicker">Classical systems</div><h2>The six Āstika darśanas</h2></div></div>
+  <div class="grid3"><div class="panel"><h3>Nyāya</h3><p>Develops a detailed theory of reasoning and valid cognition (<strong>pramāṇa</strong>), including perception, inference, comparison and testimony in classical formulations.</p></div><div class="panel"><h3>Vaiśeṣika</h3><p>Analyzes categories of reality (<strong>padārtha</strong>) and developed an influential account of substances, qualities, motion and particulars.</p></div><div class="panel"><h3>Sāṃkhya</h3><p>Classically distinguishes <strong>puruṣa</strong> (consciousness) and <strong>prakṛti</strong> (nature), explaining experience and liberation through discriminative knowledge.</p></div><div class="panel"><h3>Yoga</h3><p>Patañjali’s Yoga system shares Sāṃkhya vocabulary while presenting a disciplined path involving ethics, concentration, meditation and samādhi.</p></div><div class="panel"><h3>Mīmāṃsā</h3><p>Analyzes Vedic ritual, dharma, language and methods of knowing, especially in relation to the authority and interpretation of Vedic injunctions.</p></div><div class="panel"><h3>Vedānta</h3><p>Centers on the Upaniṣadic, Brahma-sūtra and Gītā corpus, with major schools including Advaita, Viśiṣṭādvaita and Dvaita offering different accounts of Brahman, self and liberation.</p></div></div>
+  <div id="core-terms" class="section-head"><div><div class="section-kicker">Vocabulary engine</div><h2>Terms that change meaning with context</h2></div></div>
+  <div class="accordion"><details open><summary>Dharma</summary><div class="detail">A context-sensitive term covering duty, law, ethical order, right conduct and the sustaining order of a situation. Its meaning must be established from the text or philosophical system rather than assumed from one English gloss.</div></details><details><summary>Karma</summary><div class="detail">At a broad level, karma means action. In philosophical traditions it can also refer to causally significant action and its consequences. Karma should not be reduced to a simplistic “instant cosmic reward/punishment” formula.</div></details><details><summary>Mokṣa</summary><div class="detail">Liberation from saṃsāra, described differently across traditions. Advaita, Viśiṣṭādvaita, Dvaita, Yoga and other systems do not all define the liberated state in the same metaphysical terms.</div></details><details><summary>Ātman</summary><div class="detail">Often translated as self or inner self. Its precise philosophical status differs across traditions, and in some Vedāntic debates its relationship to Brahman is central.</div></details><details><summary>Brahman</summary><div class="detail">In Upaniṣadic and Vedāntic discourse, Brahman can denote ultimate reality. Different Vedānta schools interpret its relation to attributes, world and individual selves in substantially different ways.</div></details></div>
+  <div id="yoga" class="section-head"><div><div class="section-kicker">Yoga beyond exercise</div><h2>Patañjali’s eight limbs</h2></div></div>
+  <div class="grid4"><div class="kpi"><div class="num">1</div><div class="lab">Yama · ethical restraints</div></div><div class="kpi"><div class="num">2</div><div class="lab">Niyama · observances</div></div><div class="kpi"><div class="num">3</div><div class="lab">Āsana · posture</div></div><div class="kpi"><div class="num">4</div><div class="lab">Prāṇāyāma · breath regulation</div></div><div class="kpi"><div class="num">5</div><div class="lab">Pratyāhāra · withdrawal</div></div><div class="kpi"><div class="num">6</div><div class="lab">Dhāraṇā · concentration</div></div><div class="kpi"><div class="num">7</div><div class="lab">Dhyāna · meditation</div></div><div class="kpi"><div class="num">8</div><div class="lab">Samādhi · meditative absorption</div></div></div>
+  <div id="paths" class="section-head"><div><div class="section-kicker">Bhagavad Gītā lens</div><h2>Different yogas, one dialogue</h2></div></div>
+  <div class="grid3"><div class="panel"><h3>Karma Yoga</h3><p>Disciplined action, duty and relinquishment of attachment to results. It is not mere busyness; intention, knowledge and discipline matter.</p></div><div class="panel"><h3>Jñāna Yoga</h3><p>A path of knowledge and discernment, especially concerned with the nature of self and reality in the Gītā’s philosophical discourse.</p></div><div class="panel"><h3>Bhakti Yoga</h3><p>Devotion and loving orientation toward the divine. The Gītā develops devotion alongside knowledge and disciplined action.</p></div></div>
+  <div id="compare-phil" class="section-head"><div><div class="section-kicker">Compare without collapsing</div><h2>Same words, different metaphysics</h2></div></div>
+  <div class="table-wrap"><table class="table"><thead><tr><th>Question</th><th>Advaita Vedānta</th><th>Viśiṣṭādvaita</th><th>Dualist Vedānta example</th></tr></thead><tbody><tr><td>Ultimate reality</td><td>Brahman as non-dual reality</td><td>Brahman understood with real attributes and qualified non-duality</td><td>God, self and world remain genuinely distinct</td></tr><tr><td>Self</td><td>Ātman ultimately non-different from Brahman</td><td>Individual selves are real and inseparable from Brahman’s whole</td><td>Individual selves remain distinct from God</td></tr><tr><td>Liberation</td><td>Knowledge of non-duality</td><td>Realization and loving participation in Brahman</td><td>Devotional knowledge and divine grace within a dualist framework</td></tr></tbody></table></div>
+  <div class="section-head deep-dive"><div><div class="section-kicker">Deep philosophy archive</div><h2>The argument map behind a darśana</h2></div></div>
+  <div class="grid3"><article class="panel"><h3>Pramāṇa · means of knowledge</h3><p>Different systems debate which means produce valid cognition. Perception, inference and testimony are central categories; exact lists and their interpretation vary by school.</p></article><article class="panel"><h3>Prameya · what is known</h3><p>Philosophical systems identify domains of reality or objects of knowledge. A study should keep the epistemological question distinct from the metaphysical conclusion.</p></article><article class="panel"><h3>Bandha · bondage</h3><p>Systems explain bondage differently: ignorance, mistaken identification, karmic entanglement or other conditions. The proposed diagnosis shapes the proposed path to liberation.</p></article><article class="panel"><h3>Sādhana · means</h3><p>Knowledge, meditation, disciplined action, devotion and ethical practice are combined differently across traditions. Avoid turning one school's sādhanā into a universal prescription.</p></article><article class="panel"><h3>Mokṣa · liberation</h3><p>“Liberation” is a translation label. The metaphysical state described by each school must be studied on its own terms.</p></article><article class="panel"><h3>Darśana as a method</h3><p>The word can mean a philosophical “view” or system. The six classical systems are not six denominations and should not be treated as a single ladder of spiritual advancement.</p></article></div>
+  <div class="accordion"><details open><summary>How to compare schools fairly</summary><div class="detail">Use the same questions for each school: What exists? How do we know it? What is the self? What causes bondage? What is liberation? What practices lead there? Then record each school's answer before judging similarities.</div></details><details><summary>Why Yoga is more than postures</summary><div class="detail">Patañjali's Yoga includes ethical disciplines, observances, posture, breath regulation, sensory withdrawal, concentration, meditation and samādhi. Modern physical yoga is related to this history but is not identical to the complete classical system.</div></details></div>
+</section>
+
+<section id="dharma" class="view">
+  <div class="section-head"><div><div class="section-kicker">Study companion</div><h2>Ask Dharma · AI</h2><p>Ask for explanations, comparisons, study plans and source-oriented summaries. The assistant is designed to say when a claim is interpretive, regional or uncertain.</p></div><span class="tag green" id="aiStatus">Local knowledge mode</span></div>
+  <div class="grid2"><div class="panel"><h3>Good questions</h3><div class="accordion"><details open><summary>“Explain karma in the Gītā and compare it with Sāṃkhya.”</summary><div class="detail">Requests that specify a text and comparison produce more useful answers than broad questions such as “What does Hinduism say?”</div></details><details><summary>“Give me a beginner → advanced path for the Upaniṣads.”</summary><div class="detail">The assistant can turn a huge tradition into a staged curriculum with vocabulary checkpoints and primary-source targets.</div></details><details><summary>“Which parts are text and which are later commentary?”</summary><div class="detail">This is a high-quality research question. Ask the AI to label source layers explicitly.</div></details></div></div><div class="panel"><h3>AI principles</h3><ul><li>Separate text from interpretation.</li><li>Flag regional and sampradāya variation.</li><li>Avoid inventing quotations or citations.</li><li>Prefer precise terminology over generic spirituality.</li><li>For ritual or festival timing, defer to the relevant local authority.</li></ul></div></div>
+  <div class="section-head deep-dive"><div><div class="section-kicker">AI knowledge protocol</div><h2>How Dharma AI should reason</h2></div></div>
+  <div class="grid4"><div class="kpi"><div class="num">01</div><div class="lab">Identify the user's exact question</div></div><div class="kpi"><div class="num">02</div><div class="lab">Locate text/tradition/context</div></div><div class="kpi"><div class="num">03</div><div class="lab">Separate fact, tradition and interpretation</div></div><div class="kpi"><div class="num">04</div><div class="lab">State uncertainty instead of inventing</div></div></div>
+  <div class="accordion"><details open><summary>Source hierarchy</summary><div class="detail">When the portal later gains a citation database, AI should prefer primary texts and authoritative editions for textual claims, traditional commentaries for school-specific interpretation, institutional/academic sources for historical claims, and clearly labeled modern synthesis for educational framing.</div></details><details><summary>Quotation safety</summary><div class="detail">The AI must not fabricate Sanskrit, verse numbers, temple inscriptions or “ancient sayings.” If it cannot verify an exact quotation, it should paraphrase and say that it is paraphrasing.</div></details><details><summary>Tradition-aware answers</summary><div class="detail">If Advaita, Śaiva Siddhānta, Śrīvaiṣṇava, Gauḍīya, Śākta or another tradition gives a specific answer, name the tradition instead of presenting it as the only Hindu answer.</div></details><details><summary>Festival and Panchanga answers</summary><div class="detail">AI should not guess ritual dates. It should use the portal's location-aware calculation layer and then identify the regional/calendar convention used.</div></details></div>
+  <div class="panel chat" style="margin-top:18px"><div><h3 style="margin-bottom:4px">Dharma dialogue</h3><div class="muted">Try: “What is dharma?”, “Explain the Gītā’s 18 chapters”, “Compare Advaita and Dvaita”, “What is a tithi?”</div></div><div id="messages" class="messages"><div class="msg bot">Namaste. I can help you study Hindu texts, concepts, traditions, sacred time and philosophy. Ask a focused question and I’ll keep source, interpretation and application distinct.</div></div><div><div class="chatbar"><input id="chatInput" placeholder="Ask a precise question about Dharma…"><button class="btn primary" id="sendChat">Send</button></div><div class="sources" id="aiSources">Checking AI connection…</div><div class="status-line" id="aiError"></div></div></div>
+</section>
+
+<section id="admin" class="view">
+  <div class="section-head"><div><div class="section-kicker">Curator’s room</div><h2>Admin & Knowledge Governance</h2><p>This section is deliberately detailed because a serious knowledge portal needs editorial controls, source provenance and system health—not just pretty cards.</p></div></div>
+  <div class="grid4"><div class="kpi"><div class="num">Online</div><div class="lab">Knowledge index status</div></div><div class="kpi"><div class="num">3</div><div class="lab">Source layers: primary · commentary · modern study</div></div><div class="kpi"><div class="num">0</div><div class="lab">Unresolved critical system errors</div></div><div class="kpi"><div class="num">v3.0</div><div class="lab">Heritage UI / long-form edition</div></div></div>
+  <div class="section-head"><div><div class="section-kicker">Editorial workflow</div><h2>How a curator should publish knowledge</h2></div></div>
+  <div class="timeline"><div class="step"><b>1 · Source</b><p>Record the actual text, edition, translation or authoritative institutional page used.</p></div><div class="step"><b>2 · Classify</b><p>Label the material as primary text, traditional commentary, historical source, academic scholarship or modern educational synthesis.</p></div><div class="step"><b>3 · Contextualize</b><p>State language, period, tradition and major limitations. Avoid presenting one lineage as the universal Hindu position.</p></div><div class="step"><b>4 · Review</b><p>Check quotations, transliteration, names, dates, geography and claims of ritual universality.</p></div><div class="step"><b>5 · Publish</b><p>Expose source notes and update history so users can see how the knowledge was assembled.</p></div></div>
+  <div class="section-head"><div><div class="section-kicker">System controls</div><h2>Working tools</h2></div></div>
+  <div class="grid3"><div class="panel"><h3>AI backend</h3><p>Checks whether <code>/api/dharma</code> and <code>/api/health</code> are reachable. The browser never receives the secret API key.</p><button class="btn" id="healthBtn">Check AI Backend</button><div id="healthResult" class="result" style="margin-top:10px">Not checked.</div></div><div class="panel"><h3>Content manager</h3><p>Review the content architecture: deity entries, scripture records, temple profiles, philosophy modules and festival notes.</p><button class="btn" id="contentBtn">Open Content Schema</button></div><div class="panel"><h3>Interface settings</h3><p>Local preferences for reduced motion, notifications and reading mode.</p><button class="btn" id="settingsBtn">Open Settings</button></div></div>
+  <div class="section-head"><div><div class="section-kicker">Knowledge quality</div><h2>Editorial red flags</h2></div></div>
+  <div class="section-head deep-dive"><div><div class="section-kicker">Production blueprint</div><h2>What a serious knowledge database should eventually store</h2></div></div>
+  <div class="table-wrap"><table class="table"><thead><tr><th>Entity</th><th>Required fields</th><th>Quality gate</th></tr></thead><tbody><tr><td>Scripture</td><td>Title, language, recension/edition, structure, source, translation, commentary</td><td>No quotation without a passage identifier.</td></tr><tr><td>Deity</td><td>Name variants, form, tradition, iconography, textual appearances, festivals</td><td>Tradition and source must be named.</td></tr><tr><td>Temple</td><td>Name, coordinates, deity, region, history, architecture, ritual notes</td><td>Geographic and historical claims need provenance.</td></tr><tr><td>Festival</td><td>Governing tithi/condition, region, calendar convention, location rules</td><td>No universal date without convention.</td></tr><tr><td>Philosophy</td><td>School, texts, pramāṇa, ontology, self, bondage, liberation, sādhanā</td><td>Do not merge competing schools into one definition.</td></tr></tbody></table></div>
+  <div class="accordion"><details open><summary>Version every important claim</summary><div class="detail">A living portal should store who reviewed a claim, when it was reviewed, what source was used and what changed. This turns “content” into auditable knowledge rather than anonymous text.</div></details><details><summary>Regionalization should be first-class data</summary><div class="detail">Region, language, sampradāya and temple affiliation should be data fields, not buried inside prose. This allows the same concept to be displayed with the right local context.</div></details><details><summary>Search should understand synonyms</summary><div class="detail">A production search index should connect variants such as Kṛṣṇa/Krishna, Śiva/Shiva, Gaṇeśa/Ganesh and Pañcāṅga/Panchang while retaining the canonical scholarly spelling.</div></details></div>
+  <div class="accordion"><details open><summary>False precision</summary><div class="detail">Do not label a regional festival date, ritual sequence or astronomical approximation as universally exact. State the convention and location.</div></details><details><summary>Quote without source</summary><div class="detail">A Sanskrit-looking sentence is not evidence. Store source, chapter/verse or edition information wherever possible.</div></details><details><summary>Pan-Hindu generalization</summary><div class="detail">If a practice belongs specifically to a Śaiva, Vaiṣṇava, Śākta, Smārta or regional context, say so.</div></details><details><summary>Myth/history confusion</summary><div class="detail">Traditional narrative, inscriptional evidence and modern historical reconstruction are different kinds of knowledge. Keep them visibly separate.</div></details></div>
+</section>
+
+<footer class="footer"><div class="omfoot">ॐ</div><p><b>Sanātana · The Living Dharma Knowledge Portal</b> is an educational interface concept. It is designed to encourage careful study rather than claim ownership of a diverse religious tradition. Always distinguish scripture, commentary, regional practice and modern scholarship.</p></footer>
+</div>
+</main>
+</div>
+<div class="modal-bg" id="modalBg"><div class="modal"><button class="close" id="closeModal">×</button><div id="modalContent"></div></div></div>
+<div class="toast" id="toast"></div>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/astronomy-engine@2.1.19/astronomy.browser.min.js"></script>
+<script>
+
+/* ===================== DATA — deities, scriptures, temples, local-answer fallback ===================== */
+const deities=[
+ {n:'Śiva',cat:'Śaiva',sym:'🔱',desc:'A major deity whose traditions include ascetic, yogic, household, cosmic and devotional dimensions. “Śiva” and Rudra have complex textual histories.',tags:['Maheśvara','Naṭarāja','Dakṣiṇāmūrti'],deep:'Study Vedic Rudra, epic and Purāṇic narratives, Āgamic traditions, Śaiva Siddhānta and non-dual Śaiva philosophies separately.'},
+ {n:'Viṣṇu',cat:'Vaiṣṇava',sym:'🪷',desc:'A major deity associated with preservation and cosmic order, with extensive Vaiṣṇava traditions and avatāra theology.',tags:['Nārāyaṇa','Avatāra','Vaiṣṇava'],deep:'Compare Vedic Viṣṇu, epic Nārāyaṇa traditions, Purāṇic theology and major Vedānta sampradāyas.'},
+ {n:'Kṛṣṇa',cat:'Vaiṣṇava',sym:'🪶',desc:'A central figure in the Mahābhārata and Bhagavad Gītā, and the focus of numerous devotional traditions.',tags:['Gītā','Bhakti','Vraja'],deep:'Separate the Kṛṣṇa of the Mahābhārata/Gītā from later regional devotional developments while studying how traditions connect them.'},
+ {n:'Rāma',cat:'Vaiṣṇava',sym:'🏹',desc:'Hero and divine figure of the Rāmāyaṇa tradition, associated with kingship, dharma, devotion and idealized conduct in many retellings.',tags:['Rāmāyaṇa','Dharma','Ayodhyā'],deep:'Compare Vālmīki Rāmāyaṇa with later vernacular retellings and regional devotional traditions.'},
+ {n:'Devī / Durgā',cat:'Śākta',sym:'🦁',desc:'Forms of the Goddess are central to Śākta traditions; Durgā is prominently celebrated in the Devī Māhātmya and many regional traditions.',tags:['Śakti','Navarātri','Devī Māhātmya'],deep:'Study the Goddess through Devī Māhātmya, Devī Bhāgavata, Tantric and regional traditions without collapsing them into one system.'},
+ {n:'Lakṣmī',cat:'Śākta',sym:'🪷',desc:'Associated with auspiciousness, prosperity and abundance, with major roles in Vaiṣṇava and wider Hindu worship.',tags:['Śrī','Prosperity','Viṣṇu'],deep:'Explore Śrī as theological concept, Lakṣmī as deity, and regional household/temple worship.'},
+ {n:'Sarasvatī',cat:'Śākta',sym:'📜',desc:'Associated with speech, learning, music and knowledge; worship is prominent in educational and artistic contexts.',tags:['Vāk','Vidya','Music'],deep:'Trace Vedic associations with Vāk/Sarasvatī and later iconographic and devotional developments.'},
+ {n:'Gaṇeśa',cat:'Other',sym:'🐘',desc:'Widely invoked as a remover of obstacles and associated with beginnings, intelligence and auspiciousness.',tags:['Gaṇapati','Beginnings','Buddhi'],deep:'Compare Purāṇic narratives, Gaṇapatya traditions and contemporary household/temple worship.'},
+ {n:'Hanumān',cat:'Other',sym:'🚩',desc:'A celebrated devotee and heroic figure associated with Rāma, strength, service, courage and devotion.',tags:['Rāma','Sevā','Bhakti'],deep:'Study the Hanumān of the Rāmāyaṇa alongside later devotional, regional and theological traditions.'},
+ {n:'Kālī',cat:'Śākta',sym:'🗡️',desc:'A fierce form of the Goddess associated with time, destruction of ego and ignorance, and transformative power; central to Śākta and Tantric traditions, especially in Bengal and Assam.',tags:['Śakti','Tantra','Kālī Pūjā'],deep:'Distinguish the Kālī of the Devī Māhātmya and later Purāṇas from her extensive role in Tantric sādhanā and Bengali devotional traditions (e.g. Rāmprasād, Ramakrishna).'},
+ {n:'Brahmā',cat:'Other',sym:'🪔',desc:'The deity traditionally associated with cosmic creation within the Trimūrti (Brahmā–Viṣṇu–Śiva) framework of later theology, though he receives comparatively little independent temple worship today.',tags:['Trimūrti','Sṛṣṭi','Sarasvatī'],deep:'Study why creator-deity worship diminished relative to Śaiva and Vaiṣṇava traditions, and compare Purāṇic explanations offered for this shift.'},
+ {n:'Kārtikeya / Murugan',cat:'Śaiva',sym:'🔱',desc:'Son of Śiva associated with war, strategy, youth and victory; worshipped widely as Skanda and Subrahmaṇya in North India and especially as Murugan in Tamil Śaiva traditions.',tags:['Skanda','Tamil bhakti','Vēl'],deep:'Compare Sanskrit Skanda Purāṇa narratives with the distinct Tamil devotional literature (e.g. Tirumurukāṟṟuppaṭai) surrounding Murugan.'},
+ {n:'Sūrya',cat:'Other',sym:'☀️',desc:'The Vedic solar deity, addressed directly in Ṛgvedic hymns and the Gāyatrī mantra tradition; retains dedicated temple worship, notably at Konārka and Modhera.',tags:['Vedic','Gāyatrī','Chhath'],deep:'Trace continuity from Vedic solar hymns through classical Sūrya temple architecture to living observances such as Chhath Pūjā.'},
+ {n:'Ayyappan',cat:'Other',sym:'🏹',desc:'A deity especially venerated at Sabarimala in Kerala, understood in regional tradition as born of Śiva and Mohinī (Viṣṇu\u2019s female form), reflecting a distinctly South Indian devotional synthesis.',tags:['Sabarimala','Kerala','Vrata'],deep:'Study the Sabarimala pilgrimage\u2019s distinctive 41-day vrata discipline and its regional theological narrative separately from pan-Indian Purāṇic material.'}
+];
+const scriptures=[
+ {n:'Ṛg Veda',cat:'Veda',meta:'4 Vedas · Saṃhitā · hymns',desc:'A collection of ancient Sanskrit hymns organized into maṇḍalas and sūktas. Its language, ritual context and historical layers require specialist study.',deep:'Begin with the Vedic corpus as oral literature; then study selected hymns, deities, meters and ritual contexts. Avoid treating later Purāṇic narratives as if they were the original Ṛgvedic context.'},
+ {n:'Sāma Veda',cat:'Veda',meta:'4 Vedas · liturgical chant',desc:'Closely related to Ṛgvedic verses but organized for musical liturgical performance in Vedic ritual contexts.',deep:'Study its relation to Ṛgvedic textual material and the importance of oral/intonational transmission.'},
+ {n:'Yajur Veda',cat:'Veda',meta:'4 Vedas · sacrificial formulas',desc:'Contains prose and verse materials associated with ritual performance. Major recensional families include Śukla and Kṛṣṇa Yajurveda.',deep:'The distinction between Śukla and Kṛṣṇa recensions is important. Do not assume “the Yajur Veda” is a single uniform text.'},
+ {n:'Atharva Veda',cat:'Veda',meta:'4 Vedas · diverse hymns/formulas',desc:'A Vedic collection with a broad range of material, including healing, household, royal and speculative themes.',deep:'Study its distinctive corpus and recensional history rather than forcing it into a simplified “fourth book” model.'},
+ {n:'Īśa Upaniṣad',cat:'Upaniṣad',meta:'Short Upaniṣadic text · philosophical verse',desc:'A compact text exploring action, renunciation, knowledge and the nature of the self/reality.',deep:'Compare how different Vedānta commentaries interpret its terse and sometimes difficult verses.'},
+ {n:'Bhagavad Gītā',cat:'Gītā',meta:'18 chapters · Mahābhārata',desc:'A dialogue between Kṛṣṇa and Arjuna addressing action, knowledge, devotion, self, nature and liberation.',deep:'Read chapter-by-chapter. Major traditional commentaries include Śaṅkara, Rāmānuja and Madhva, among many later interpretations.'},
+ {n:'Vālmīki Rāmāyaṇa',cat:'Itihāsa',meta:'Epic · kāṇḍas · Rāma narrative',desc:'A foundational Sanskrit Rāmāyaṇa tradition, with a vast later reception across South and Southeast Asia.',deep:'Distinguish the Sanskrit epic text from the many later vernacular and regional Rāmāyaṇa traditions.'},
+ {n:'Mahābhārata',cat:'Itihāsa',meta:'Epic · large composite tradition',desc:'A vast epic tradition containing narrative, ethical debate, didactic material and the Bhagavad Gītā.',deep:'Its scale and layered composition make it essential to read selections with textual and historical context.'},
+ {n:'Yoga Sūtras',cat:'Yoga',meta:'Pātañjala yoga · sūtra literature',desc:'A concise philosophical-practical text organized into four pādas and associated with the classical Yoga system.',deep:'Study key terms such as citta, vṛtti, kleśa, samādhi and the eight limbs in the context of the whole system.'},
+ {n:'Brahma Sūtras',cat:'Upaniṣad',meta:'Vedānta-sūtra · systematizing text',desc:'A terse aphoristic work attributed to Bādarāyaṇa that attempts to systematize the teaching of the Upaniṣads; it is foundational because every major Vedānta school wrote a bhāṣya (commentary) on it to establish its own position.',deep:'Compare how Śaṅkara, Rāmānuja and Madhva each read the same sūtras to justify Advaita, Viśiṣṭādvaita and Dvaita respectively.'},
+ {n:'Manusmṛti',cat:'Itihāsa',meta:'Dharmaśāstra · legal-ethical literature',desc:'A foundational (and historically controversial) Dharmaśāstra text addressing social duty, conduct and law in its own historical period; it is smṛti, not śruti, and its normative claims are separate from its use as a historical source.',deep:'Study its content alongside its complex and contested reception history, including modern critiques of caste-related passages.'},
+ {n:'Devī Māhātmya',cat:'Purāṇa',meta:'Mārkaṇḍeya Purāṇa · Śākta core text',desc:'A key Śākta scripture (also called Durgā Saptaśatī or Caṇḍī) recounting the Goddess\u2019s defeat of buffalo-demon Mahiṣāsura and other asuras; recited widely during Navarātri and Durgā Pūjā.',deep:'Study its three-part structure (Mahākālī, Mahālakṣmī, Mahāsarasvatī episodes) and its foundational role for later Tantric Goddess theology.'},
+ {n:'Bhāgavata Purāṇa',cat:'Purāṇa',meta:'Mahāpurāṇa · Kṛṣṇa bhakti',desc:'One of the most influential Purāṇas for Vaiṣṇava devotional traditions, especially its tenth book on Kṛṣṇa\u2019s life; central to Gauḍīya, Puṣṭimārga and other bhakti movements.',deep:'Separate its theological and devotional content from questions of dating and composition debated in modern scholarship.'},
+ {n:'Vedāṅgas',cat:'Veda',meta:'6 auxiliary disciplines',desc:'Six technical disciplines developed to support correct study and ritual use of the Vedas: śikṣā (phonetics), chandas (meter), vyākaraṇa (grammar), nirukta (etymology), jyotiṣa (calendrical astronomy) and kalpa (ritual procedure).',deep:'Note that jyotiṣa here is the ancestor of later pañcāṅga/astronomical calculation discussed in the Pañcāṅga section of this portal.'}
+];
+const temples=[
+ ['Kāśī Viśvanātha','Varanasi',25.3109,83.0107,'Śaiva','Major Śiva pilgrimage center on the Ganga; the present complex has a long and layered history.'],
+ ['Jagannātha Temple','Puri',19.8049,85.8179,'Vaiṣṇava','Major pilgrimage center associated with Jagannātha, Balabhadra and Subhadrā and the Ratha Yātrā tradition.'],
+ ['Śrī Meenākṣī Amman','Madurai',9.9195,78.1193,'Śākta/Śaiva','Historic temple complex celebrated for its architecture, sculpture and Meenākṣī-Sundareśvara tradition.'],
+ ['Somnāth','Prabhas Patan',20.8880,70.4010,'Śaiva','A major Śiva pilgrimage center traditionally counted among the Jyotirliṅga sites.'],
+ ['Bṛhadīśvara','Thanjavur',10.7828,79.1318,'Śaiva','Chola-period monumental temple dedicated to Śiva and a major example of South Indian temple architecture.'],
+ ['Tirumala Venkateśvara','Tirumala',13.6833,79.3472,'Vaiṣṇava','Major pilgrimage center dedicated to Venkateśvara with a vast living institutional ecosystem.'],
+ ['Kedārnāth','Kedarnath',30.7352,79.0669,'Śaiva','High-altitude Himalayan Śiva pilgrimage center associated with the Kedāra Jyotirliṅga tradition.'],
+ ['Badrināth','Badrinath',30.7433,79.4938,'Vaiṣṇava','Himalayan pilgrimage center associated with Viṣṇu as Badrinārāyaṇa.'],
+ ['Konārka Sūrya Temple','Konark',19.8876,86.0945,'Saurya heritage','13th-century temple complex dedicated to Sūrya, renowned for its chariot architecture and sculptural program.'],
+ ['Lingarāja Temple','Bhubaneswar',20.2381,85.8331,'Śaiva','Major temple of Bhubaneswar associated with Śiva and the regional Kalinga architectural tradition.'],
+ ['Rāmeśvaram','Rameswaram',9.2881,79.3174,'Śaiva','Major pilgrimage center associated with Śiva and the Rāma tradition; renowned for its long corridors.'],
+ ['Vaishno Devi','Katra',33.0308,74.9490,'Śākta','Major pilgrimage shrine associated with Devī in the Trikūṭa hills.'],
+ ['Kāmākhyā Temple','Guwahati',26.1665,91.7050,'Śākta','Major Śākta/Tantric pilgrimage center on Nīlācala hill, associated with the Goddess and distinctive Tantric ritual traditions.'],
+ ['Amarnāth Cave','Pahalgam',34.2152,75.5000,'Śaiva','High-altitude Himalayan cave shrine associated with Śiva, reached by a seasonal pilgrimage trek each year.'],
+ ['Dwārkādhīsh Temple','Dwarka',22.2442,68.9685,'Vaiṣṇava','Temple dedicated to Kṛṣṇa as Dwārkādhīsh, one of the Char Dhām pilgrimage sites and traditionally linked to the ancient city of Dvārakā.'],
+ ['Guruvāyūr Temple','Guruvayur',10.5946,76.0417,'Vaiṣṇava','Major Kerala Kṛṣṇa temple often called “Bhūloka Vaikuṇṭha” (Vaikuṇṭha on earth) in regional devotional tradition.'],
+ ['Virūpākṣa Temple','Hampi',15.3350,76.4600,'Śaiva','Ancient temple at the center of the Vijayanagara-era Hampi complex, dedicated to Śiva as Virūpākṣa and still an active site of worship amid the ruins.'],
+ ['Khajurāho Group','Khajuraho',24.8318,79.9199,'Śaiva/Vaiṣṇava','UNESCO World Heritage temple complex renowned for Chandela-era architecture and sculptural program, including major Śaiva and Vaiṣṇava shrines.'],
+ ['Ekambareśvarar Temple','Kanchipuram',12.8447,79.7006,'Śaiva','One of the Pañca Bhūta Sthala (five-element) Śiva temples, representing the earth element, in the temple city of Kanchipuram.']
+];
+const fallback={
+ karma:'Karma literally means “action.” In the Bhagavad Gītā it is discussed together with dharma, intention, attachment and liberation — Kṛṣṇa teaches niṣkāma karma, acting without attachment to results (2.47). In Sāṃkhya/Yoga and Vedānta, karma also refers to causally significant action whose latent impressions (saṃskāra/vāsanā) shape future experience across lifetimes. It is not a simple “instant cosmic reward/punishment” formula.',
+ gita:'The Bhagavad Gītā is an 18-chapter dialogue between Kṛṣṇa and Arjuna set within the Mahābhārata\u2019s Bhīṣma Parvan, just before the Kurukṣetra war. It addresses action (karma yoga), knowledge (jñāna yoga), devotion (bhakti yoga), the self, nature (prakṛti) and liberation. Śaṅkara, Rāmānuja and Madhva each wrote influential but differing commentaries on it.',
+ yoga:'Yoga is not one system. Patañjali\u2019s Yoga Sūtras present an eight-limbed (aṣṭāṅga) discipline: yama, niyama, āsana, prāṇāyāma, pratyāhāra, dhāraṇā, dhyāna, samādhi. The Bhagavad Gītā uses “yoga” more broadly for disciplined paths of action, knowledge and devotion. Later haṭha-yoga traditions (e.g. the Haṭha Yoga Pradīpikā) develop the physical postures most familiar today — related to, but not identical with, the classical system.',
+ shiva:'Śiva is one of Hinduism\u2019s major deities, worshipped across diverse Śaiva traditions as ascetic (Maheśvara), cosmic dancer (Naṭarāja), teacher (Dakṣiṇāmūrti) and household god alongside Pārvatī. Śaiva Siddhānta (dualist, ritually oriented, strong in Tamil Nadu) and Kashmir Śaivism (non-dual, philosophically oriented) represent very different theological elaborations of Śiva.',
+ vishnu:'Viṣṇu is the preserving deity of the Vaiṣṇava traditions, understood through avatāra theology — divine descents including Rāma and Kṛṣṇa (commonly counted among ten daśāvatāra). Major Vaiṣṇava schools (Śrīvaiṣṇava/Rāmānuja, Mādhva, Gauḍīya) differ in how they describe Viṣṇu\u2019s relationship to the individual self and the world.',
+ krishna:'Kṛṣṇa is a central figure of the Mahābhārata and speaker of the Bhagavad Gītā, and separately the focus of extensive devotional (bhakti) traditions centered on his childhood in Vraja and his role as Rādhā\u2019s beloved, especially in Gauḍīya Vaiṣṇavism. Scholars and traditions both note these are related but distinguishable bodies of material.',
+ rama:'Rāma is the hero of Vālmīki\u2019s Rāmāyaṇa, revered as an avatāra of Viṣṇu and as an ideal of dharmic kingship, filial duty and conduct (maryādā puruṣottama). The Sanskrit epic differs in emphasis from later vernacular retellings such as Tulsīdās\u2019s Rāmcaritmānas.',
+ durga:'Durgā is a principal warrior form of the Goddess (Devī), celebrated for defeating the buffalo-demon Mahiṣāsura in the Devī Māhātmya. She is worshipped intensively during Navarātri and, in Bengal, during Durgā Pūjā — a distinct regional festival elaboration.',
+ kali:'Kālī is a fierce form of the Goddess associated with time, the destruction of ego/ignorance and transformative power, especially prominent in Bengali and Tantric Śākta traditions (e.g. Ramakrishna\u2019s devotion at Dakṣiṇeśvar). She should not be reduced to a simple “goddess of destruction” caricature.',
+ ganesh:'Gaṇeśa (Gaṇapati) is widely invoked at the start of undertakings as a remover of obstacles (vighnahartā) and patron of intellect. Gaṇapatya traditions treat him as supreme deity, while most households and temples honor him as an auspicious, approachable figure across sectarian lines.',
+ hanuman:'Hanumān is the devoted ally of Rāma in the Rāmāyaṇa, celebrated for strength, service (sevā) and unwavering bhakti. He is a major independent object of worship in his own right, especially in North Indian devotional practice (e.g. the Hanumān Cālīsā).',
+ dharma:'Dharma is context-sensitive rather than a single fixed concept: depending on the source it can mean duty, ethical order, law, right conduct, or the sustaining order of a situation (from the root dhṛ, “to uphold”). Its precise sense should be established from the specific text and philosophical school rather than assumed from one English gloss.',
+ moksha:'Mokṣa is liberation from saṃsāra (the cycle of rebirth), but different schools define the liberated state differently: Advaita Vedānta describes realization of non-difference between ātman and Brahman; Viśiṣṭādvaita describes blissful eternal service to and communion with Brahman/Viṣṇu while retaining individuality; Sāṃkhya-Yoga describes isolation (kaivalya) of puruṣa from prakṛti.',
+ atman:'Ātman is often translated “self” or “inner self.” Its philosophical status is fiercely debated: Advaita Vedānta holds ātman is ultimately identical with Brahman; Viśiṣṭādvaita and Dvaita hold the individual self is real and distinct, even while related to Brahman; Buddhist traditions, by contrast, deny a permanent self altogether (anātman) — a useful contrast for clarifying the Vedāntic position.',
+ brahman:'In Upaniṣadic and Vedāntic thought, Brahman denotes ultimate reality. Advaita treats Brahman as non-dual and without qualifying attributes (nirguṇa) at the highest level of truth; Viśiṣṭādvaita treats Brahman as possessing real auspicious qualities and constituting a whole with souls and matter as its body; Dvaita treats Brahman (Viṣṇu) as wholly distinct from souls and matter.',
+ upanishad:'The Upaniṣads are a large, historically diverse corpus of Vedic-tradition texts (not one book) concerned with knowledge, the self, ultimate reality and liberation, often presented as dialogues between teacher and student. Principal Upaniṣads (Īśa, Kena, Kaṭha, Bṛhadāraṇyaka, Chāndogya and others) form the textual basis later systematized in the Brahma Sūtras.',
+ vedanta:'Vedānta (“end of the Veda”) names the family of schools built on the Upaniṣads, Bhagavad Gītā and Brahma Sūtras. Its major branches — Advaita (Śaṅkara), Viśiṣṭādvaita (Rāmānuja) and Dvaita (Madhva) — reach different conclusions about the relationship between self, world and ultimate reality, despite sharing core texts.',
+ advaita:'Advaita Vedānta, associated with Śaṅkara (c. 8th century CE), teaches that Brahman alone is ultimately real and non-dual, and that the perceived multiplicity of the world reflects avidyā (ignorance) superimposed on that single reality. Liberation is realization of the self\u2019s non-difference from Brahman, not the acquisition of anything new.',
+ sanskrit:'Sanskrit is the classical liturgical and literary language of most Hindu scripture — the Vedas, epics, Purāṇas, philosophical sūtras and commentaries. Its precise grammar (formalized by Pāṇini) and layered oral-transmission traditions are central to how Hindu textual scholarship approaches a passage.',
+ puja:'Pūjā is ritual worship, typically involving offerings (flowers, food, light, water) to a deity\u2019s image or symbol, following procedures that vary substantially by tradition, region, temple and home custom. It is one part of a wider ritual life that also includes recitation, vows and festival observance.',
+ mantra:'A mantra is a sound, syllable or verse used in ritual, meditation or recitation, believed in many traditions to carry transformative power beyond its literal semantic meaning. Well-known examples include Oṃ, the Gāyatrī mantra, and various deity-specific mantras used in Tantric and devotional practice.',
+ om:'Oṃ (also written Aum) is considered a foundational sacred syllable in Hindu tradition, discussed philosophically in texts like the Māṇḍūkya Upaniṣad, where its three sounds (A-U-M) are correlated with waking, dreaming and deep-sleep states of consciousness, plus a fourth, silent state (turīya).',
+ varna:'Varṇa is a fourfold classical social classification (brāhmaṇa, kṣatriya, vaiśya, śūdra) discussed in early texts. It is historically distinct from jāti (the much larger and more complex system of endogamous communities), and its interpretation, application and critique — including strong modern reform and anti-caste movements — are contested and should not be flattened into one narrative.',
+ ashrama:'The āśrama system describes four traditional life stages: brahmacarya (student), gṛhastha (householder), vānaprastha (forest-dweller/retiree) and sannyāsa (renunciate). It is a normative classical framework rather than a description of how everyone historically lived.',
+ navratri:'Navarātri (“nine nights”) is a festival period honoring the Goddess, with major regional forms: Durgā Pūjā in Bengal, Garbā/Dāṇḍiyā celebrations in Gujarat, and Rāmlīlā performances culminating in Vijayadaśamī/Dussehra in North India. The underlying tithi-based timing is shared even though regional practice differs sharply.',
+ diwali:'Dīpāvalī (Diwali) is a multi-day festival complex centered on lamps, prosperity and renewal, with regional narratives including Rāma\u2019s return to Ayodhyā, Kṛṣṇa\u2019s defeat of Narakāsura, and Lakṣmī pūjā for prosperity. Component days (Dhanteras, Naraka Chaturdaśī, Lakṣmī Pūjā, Govardhana Pūjā, Bhāi Dūj) can fall on different tithis within the period.',
+ holi:'Holī is a spring festival complex with two main components: Holikā Dahana (a bonfire the evening before, associated with the story of Prahlāda and Holikā) and the following day\u2019s color-throwing celebration, with regional variants such as Braj\u2019s Lāṭhmār Holī.',
+ tithi:'A tithi is a lunar day defined by the angular separation of the Moon and Sun along the ecliptic. Each tithi spans 12° of separation, giving 30 tithis in a synodic lunar month, grouped into śukla pakṣa (waxing, 15 tithis) and kṛṣṇa pakṣa (waning, 15 tithis). Festival observance layers on additional sunrise- and region-specific rules.',
+ nakshatra:'A nakṣatra is one of 27 equal 13°20′ sectors of the ecliptic used to mark the Moon\u2019s position in a sidereal framework; traditions use specific ayanāṃśa (sidereal correction) conventions when computing it precisely.',
+ karana:'A karaṇa is half of a tithi (6° of Sun–Moon angular separation). There are 11 named karaṇas: seven repeat cyclically through the lunar month (Bava, Bālava, Kaulava, Taitila, Gara, Vaṇija, Viṣṭi) and four occur only once each month (Kimstughna, Śakuni, Catuṣpāda, Nāga).',
+ panchang:'The pañcāṅga (“five limbs”) is the traditional Hindu calendrical system built from five elements: tithi (lunar day), vāra (weekday), nakṣatra (lunar mansion), yoga (Sun+Moon longitude sum sector) and karaṇa (half-tithi). Use the Pañcāṅga & Festivals section of this portal for a live astronomical calculation.',
+ vedas:'The four Vedas are Ṛg, Sāma, Yajur and Atharva. Each has its own recensional traditions (śākhā) and textual layers — Saṃhitā (hymns/formulas), Brāhmaṇa (ritual exposition), Āraṇyaka (forest texts) and Upaniṣad (philosophical texts). “The Vedas” is therefore a large, layered corpus, not four simple books.',
+ purana:'The Purāṇas are a large body of smṛti literature covering cosmology, genealogy, mythology, pilgrimage lore and theology, traditionally organized by sectarian focus (Vaiṣṇava, Śaiva, Śākta and others). They are foundational for most popular deity narratives, distinct from Vedic śruti material.',
+ temple:'A traditional Hindu temple can be studied on four layers: the textual layer (sthala-māhātmya, āgamic references, inscriptions), the material layer (architecture, sculpture, construction phases), the ritual layer (daily pūjā, festival cycle, processions) and the living-institution layer (its current social, economic and community role). See the Temple Atlas for individual profiles.',
+ ahimsa:'Ahiṃsā (non-violence/non-harm) is an ethical principle emphasized across Hindu, Jain and Buddhist traditions, notably among the yamas in Patañjali\u2019s Yoga Sūtras, and central to Jain ethics in a particularly rigorous form.',
+ guru:'A guru is a teacher who transmits knowledge or initiation within a lineage (paramparā/sampradāya). The guru-śiṣya (teacher-student) relationship is considered essential in many traditions for correctly understanding scripture, ritual and meditative practice, not merely for factual instruction.',
+ default:'I can explain that from a source-oriented Hindu studies perspective. Try asking about a specific text (e.g. the Gītā, Upaniṣads), deity (Śiva, Viṣṇu, Devī), philosophical school (Advaita, Sāṃkhya), Sanskrit term (dharma, karma, mokṣa), festival, temple or pañcāṅga concept — I\u2019ll try to separate primary text, traditional interpretation and modern synthesis.'
+};
+
+/* ===================== CORE HELPERS & NAVIGATION ===================== */
+function $(s){return document.querySelector(s)}
+function toast(t){const e=$('#toast');e.textContent=t;e.classList.add('show');setTimeout(()=>e.classList.remove('show'),2400)}
+function showView(id){document.querySelectorAll('.view').forEach(v=>v.classList.toggle('active',v.id===id));document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.view===id));window.scrollTo({top:0,behavior:'smooth'})}
+document.querySelectorAll('.nav button').forEach(b=>b.onclick=()=>showView(b.dataset.view));document.querySelectorAll('[data-view-btn]').forEach(b=>b.onclick=()=>showView(b.dataset.viewBtn));document.querySelectorAll('[data-scroll]').forEach(b=>b.onclick=()=>document.getElementById(b.dataset.scroll).scrollIntoView({behavior:'smooth'}));
+$('#closeModal').onclick=()=>$('#modalBg').classList.remove('open');$('#modalBg').onclick=e=>{if(e.target.id==='modalBg')$('#modalBg').classList.remove('open')};
+function openModal(title,body){$('#modalContent').innerHTML='<h2>'+title+'</h2>'+body;$('#modalBg').classList.add('open')}
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+
+/* ===================== DEITIES — render + dossier modal ===================== */
+function renderDeities(filter='All'){
+ const list=deities.map((x,i)=>({x,i})).filter(o=>filter==='All'||o.x.cat===filter);
+ $('#deityGrid').innerHTML=list.map(o=>{const x=o.x;return `<article class="panel entity-card"><div><button class="fav-toggle" data-fav="deity:${esc(x.n)}">♡</button><div class="symbol">${x.sym}</div><div class="meta"><span class="tag">${x.cat}</span>${x.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div><h3>${x.n}</h3><p>${x.desc}</p></div><button class="btn" data-deity-idx="${o.i}">Enter dossier →</button></article>`}).join('');
+ document.querySelectorAll('#deityGrid [data-deity-idx]').forEach(b=>b.onclick=()=>openDeityDossier(+b.dataset.deityIdx));
+ syncFavorites();
+}
+function openDeityDossier(i){const x=deities[i];openModal(esc(x.n),`<p>${esc(x.desc)}</p><h3>Deep study</h3><p>${esc(x.deep)}</p><h3>Questions to pursue</h3><ul><li>Which primary texts mention this form?</li><li>Which sampradāya is being described?</li><li>Which symbols are iconographic conventions?</li><li>Which claims are later regional developments?</li></ul>`)}
+
+/* ===================== SCRIPTURES — render + dossier modal ===================== */
+function renderScriptures(filter='All'){
+ const list=scriptures.map((x,i)=>({x,i})).filter(o=>filter==='All'||o.x.cat===filter);
+ $('#scriptureList').innerHTML=list.map(o=>{const x=o.x;return `<div class="panel" style="display:flex;justify-content:space-between;gap:20px;align-items:center"><div><button class="fav-toggle" data-fav="scripture:${esc(x.n)}">♡</button><div class="meta"><span class="tag">${x.cat}</span></div><h3>${x.n}</h3><p>${x.meta}</p><p>${x.desc}</p></div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" data-reader-open="${o.i}">Open reader →</button><button class="btn gold" data-scripture-idx="${o.i}">Dossier</button></div></div>`}).join('');
+ document.querySelectorAll('#scriptureList [data-reader-open]').forEach(b=>b.onclick=()=>openReader(scriptures[+b.dataset.readerOpen].n));
+ document.querySelectorAll('#scriptureList [data-scripture-idx]').forEach(b=>b.onclick=()=>openScriptureDossier(+b.dataset.scriptureIdx));
+ syncFavorites();
+}
+function openScriptureDossier(i){const x=scriptures[i];openModal(esc(x.n),`<p><b>${esc(x.meta)}</b></p><p>${esc(x.deep)}</p><p><b>Study rule:</b> keep text, translation and commentary in separate layers.</p>`)}
+
+
+/* ===================== SCRIPTURE READER — Gītā study pages + generic scripture pages ===================== */
+const readerPages={
+ opening:{title:'Bhagavad Gītā · Study opening',body:`<p><b>Context:</b> The Bhagavad Gītā appears within the Bhīṣma Parvan of the Mahābhārata. It is framed as a dialogue between Kṛṣṇa and Arjuna before battle.</p><p class="dev">धर्मक्षेत्रे कुरुक्षेत्रे समवेता युयुत्सवः</p><p><b>How to read:</b> Follow the speaker, listener, immediate problem, key Sanskrit terms and chapter argument before extracting a standalone teaching.</p>`},
+ context:{title:'Context · Textual and intellectual setting',body:`<p>The Gītā belongs to the Mahābhārata tradition and has generated many layers of interpretation. A careful reader distinguishes the epic narrative frame, the Gītā's own dialogue, later commentaries and modern translations.</p><p><b>Transmission:</b> Study editions, Sanskrit text, translation choices and commentary separately. “The Gītā says…” should ideally be followed by a chapter/verse reference.</p>`},
+ verse:{title:'Verse layer · Sanskrit → translation → meaning',body:`<p class="dev">कर्मण्येवाधिकारस्ते मा फलेषु कदाचन ।</p><p><b>Reference:</b> Bhagavad Gītā 2.47. The Sanskrit line is the textual layer; any English rendering is a translation layer, not the Sanskrit itself.</p><p><b>Study prompt:</b> Read the surrounding verses before deciding what “adhikāra”, “phala” and “karma” mean in this argument.</p>`},
+ commentary:{title:'Commentary layer · interpretive traditions',body:`<p>Śaṅkara, Rāmānuja, Madhva and many later teachers read the Gītā through different metaphysical and devotional frameworks. The same verse can therefore support distinct technical interpretations.</p><p><b>Method:</b> Name the commentator, identify the school, record the key interpretive move, then compare it with at least one other reading.</p>`},
+ reflection:{title:'Reflection · application without rewriting the source',body:`<p>Personal reflection belongs to the reader. It becomes academically safer when clearly labeled as application rather than attributed to the ancient text.</p><p><b>Journal prompts:</b> What problem is the passage addressing? Which assumption did I bring to it? What changes when I read it through a different commentary? What remains uncertain?</p>`}
+};
+let currentReader='Bhagavad Gītā';
+function scriptureByName(name){return scriptures.find(s=>s.n===name)}
+function renderReaderPage(key='opening'){
+ if(currentReader==='Bhagavad Gītā'){
+  const x=readerPages[key]||readerPages.opening;
+  $('#manuscriptContent').innerHTML=`<h2>${currentReader} · ${x.title.split(' · ')[1]||''}</h2>${x.body}<p><b>Reader discipline:</b> distinguish source text, translation, commentary and personal reflection.</p>`;
+ }else{
+  const s=scriptureByName(currentReader);
+  const labels={opening:'Study opening',context:'Context',verse:'Text sample',commentary:'Commentary layer',reflection:'Reflection'};
+  let body='<p>Scripture record not found.</p>';
+  if(s){
+   if(key==='opening')body=`<p><b>Context:</b> ${esc(s.meta)}.</p><p>${esc(s.desc)}</p>`;
+   else if(key==='context')body=`<p>${esc(s.desc)}</p><p><b>Transmission:</b> Study editions, translation choices and commentary layers separately rather than treating one rendering as the definitive original.</p>`;
+   else if(key==='verse')body=`<p>This portal does not yet store a specific verse-level passage for <b>${esc(s.n)}</b>. Consult a scholarly edition or translation for exact textual passages, and record the chapter/verse or section reference alongside any quotation you use.</p>`;
+   else if(key==='commentary')body=`<p>${esc(s.deep)}</p>`;
+   else if(key==='reflection')body=`<p>Personal reflection belongs to the reader. It becomes academically safer when clearly labeled as application rather than attributed to the ancient text.</p><p><b>Journal prompts:</b> What problem is this text addressing? Which assumption did I bring to it? What remains uncertain?</p>`;
+  }
+  $('#manuscriptContent').innerHTML=`<h2>${esc(currentReader)} · ${labels[key]||'Study opening'}</h2>${body}<p><b>Reader discipline:</b> distinguish source text, translation, commentary and personal reflection.</p>`;
+ }
+ document.querySelectorAll('[data-reader]').forEach(b=>b.classList.toggle('active',b.dataset.reader===key));
+}
+function openReader(name){currentReader=name;showView('scriptures');setTimeout(()=>{renderReaderPage('opening');document.getElementById('reader').scrollIntoView({behavior:'smooth',block:'start'});},80)}
+
+document.querySelectorAll('[data-reader]').forEach(b=>b.onclick=()=>renderReaderPage(b.dataset.reader));
+document.querySelectorAll('[data-family]').forEach(b=>b.onclick=()=>{const f=b.dataset.family;$('#scriptureFilter').value=f;renderScriptures(f);document.querySelectorAll('[data-family]').forEach(x=>x.classList.toggle('active',x===b));setTimeout(()=>document.getElementById('scripture-list').scrollIntoView({behavior:'smooth',block:'start'}),60)});
+$('#deityFilter').onchange=e=>renderDeities(e.target.value);
+$('#scriptureFilter').onchange=e=>renderScriptures(e.target.value);
+renderDeities();renderScriptures();renderReaderPage();
+
+// Favorites: persistent, interactive, and removable.
+function getFavorites(){try{return JSON.parse(localStorage.getItem('sanatana_favorites')||'[]')}catch{return[]}}
+function saveFavorites(a){localStorage.setItem('sanatana_favorites',JSON.stringify(a))}
+function toggleFavorite(key){let a=getFavorites();if(a.includes(key))a=a.filter(x=>x!==key);else a.push(key);saveFavorites(a);syncFavorites();toast(a.includes(key)?'Saved to Favorites':'Removed from Favorites')}
+function syncFavorites(){const a=getFavorites();document.querySelectorAll('[data-fav]').forEach(b=>{const yes=a.includes(b.dataset.fav);b.classList.toggle('saved',yes);b.textContent=yes?'♥':'♡';b.onclick=()=>toggleFavorite(b.dataset.fav)})}
+function favoriteLabel(key){return key.split(':').slice(1).join(':')}
+function openFavorites(){const a=getFavorites();openModal('Favorites',a.length?`<p>Your saved study items are stored in this browser.</p><div class="stack">${a.map(k=>`<div class="panel" style="display:flex;justify-content:space-between;align-items:center;gap:12px"><div><span class="tag">${k.split(':')[0]}</span><h3 style="margin:8px 0 0">${esc(favoriteLabel(k))}</h3></div><button class="btn" data-remove-fav="${esc(k)}">Remove</button></div>`).join('')}</div>`:'<p>No saved items yet.</p><p>Use the ♡ button on a deity, scripture or temple entry to build your personal study shelf.</p>');
+ document.querySelectorAll('#modalContent [data-remove-fav]').forEach(b=>b.onclick=()=>{toggleFavorite(b.dataset.removeFav);openFavorites()});
+}
+
+
+/* ===================== PAÑCĀṄGA — "Use my location" (geolocation) ===================== */
+$('#locationBtn').onclick=()=>{if(!navigator.geolocation){toast('Geolocation is unavailable in this browser.');return}$('#panchangStatus').textContent='Requesting location permission…';navigator.geolocation.getCurrentPosition(p=>{pLocation={lat:p.coords.latitude,lon:p.coords.longitude,label:'Your current location'};localStorage.setItem('sanatana_location',JSON.stringify(pLocation));updatePanchang($('#datePicker').value||new Date().toISOString().slice(0,10));toast('Location updated')},e=>{toast('Location permission was not granted.');$('#panchangStatus').textContent='Location failed. Allow location access or keep the default location.'},{enableHighAccuracy:true,timeout:10000,maximumAge:300000})};
+
+
+/* ===================== PAÑCĀṄGA ENGINE — astronomical tithi/nakṣatra/yoga/karaṇa calculation ===================== */
+const tithiNames=['Pratipadā','Dvitīyā','Tṛtīyā','Caturthī','Pañcamī','Ṣaṣṭhī','Saptamī','Aṣṭamī','Navamī','Daśamī','Ekādaśī','Dvādaśī','Trayodaśī','Caturdaśī','Pūrṇimā','Pratipadā','Dvitīyā','Tṛtīyā','Caturthī','Pañcamī','Ṣaṣṭhī','Saptamī','Aṣṭamī','Navamī','Daśamī','Ekādaśī','Dvādaśī','Trayodaśī','Caturdaśī','Amāvāsyā'];
+const naks=['Aśvinī','Bharaṇī','Kṛttikā','Rohiṇī','Mṛgaśīrṣa','Ārdrā','Punarvasu','Puṣya','Āśleṣā','Maghā','Pūrvaphalgunī','Uttaraphalgunī','Hasta','Citrā','Svātī','Viśākhā','Anurādhā','Jyeṣṭhā','Mūla','Pūrvāṣāḍhā','Uttarāṣāḍhā','Śravaṇa','Dhaniṣṭhā','Śatabhiṣā','Pūrvabhādrapadā','Uttarabhādrapadā','Revatī'];
+const yogas=['Viṣkambha','Prīti','Āyuṣmān','Saubhāgya','Śobhana','Atigaṇḍa','Sukarma','Dhṛti','Śūla','Gaṇḍa','Vṛddhi','Dhruva','Vyāghāta','Harṣaṇa','Vajra','Siddhi','Vyatīpāta','Variyān','Parigha','Śiva','Siddha','Sādhya','Śubha','Śukla','Brahma','Māhendra','Vaidhṛti'];
+const varaNames=['Ravivāra','Somavāra','Maṅgalavāra','Budhavāra','Guruvāra','Śukravāra','Śanivāra'];
+const karanaMovable=['Bava','Bālava','Kaulava','Taitila','Gara','Vaṇija','Viṣṭi'];
+const karanaFixed=['Śakuni','Catuṣpāda','Nāga'];
+function karanaName(karanaIndex){if(karanaIndex===1)return'Kimstughna';if(karanaIndex>=58)return karanaFixed[karanaIndex-58];return karanaMovable[(karanaIndex-2)%7]}
+function ayanamsaLahiri(date){const year=date.getUTCFullYear()+date.getUTCMonth()/12;return 23.85+(year-2000)*0.013972}
+let pLocation={lat:28.6139,lon:77.2090,label:'New Delhi (default)'};
+try{const saved=JSON.parse(localStorage.getItem('sanatana_location')||'null');if(saved?.lat&&saved?.lon)pLocation=saved}catch{}
+function updatePanchang(date){if(!date)return;$('#panchangDetail').textContent='Calculating…';if(!window.Astronomy){$('#panchangDetail').textContent='Astronomy library not loaded. Reload with internet access or use conceptual mode.';return}try{const d=new Date(date+'T12:00:00');const sunLon=Astronomy.SunPosition(d).elon;const moonLon=Astronomy.EclipticGeoMoon(d).lon;const diff=(moonLon-sunLon+360)%360;const sum=(moonLon+sunLon)%360;const ayan=ayanamsaLahiri(d);const siderealMoonLon=(moonLon-ayan+360)%360;const ti=Math.min(30,Math.floor(diff/12)+1);const ni=Math.min(27,Math.floor(siderealMoonLon/(360/27))+1);const yi=Math.min(27,Math.floor(sum/(360/27))+1);const ki=Math.min(60,Math.floor(diff/6)+1);const vi=d.getDay();const pak=ti<=15?'Śukla Pakṣa':'Kṛṣṇa Pakṣa';$('#pTithi').textContent=tithiNames[ti-1];$('#pVara').textContent=varaNames[vi];$('#pNak').textContent=naks[ni-1];$('#pYoga').textContent=yogas[yi-1];$('#pKarana').textContent=karanaName(ki);$('#pLocationLabel').textContent=`Location: ${pLocation.label||'Selected location'}`;$('#panchangStatus').textContent=`Latitude ${pLocation.lat.toFixed(4)}°, longitude ${pLocation.lon.toFixed(4)}°. Sunrise is calculated for this location.`;$('#panchangDetail').innerHTML=`<b>${pak}</b> · ${tithiNames[ti-1]} · ${varaNames[vi]} · Nakṣatra ${naks[ni-1]} · Yoga ${yogas[yi-1]} · Karaṇa ${karanaName(ki)}<br><br>Sun longitude: ${sunLon.toFixed(3)}° · Moon longitude: ${moonLon.toFixed(3)}° · separation: ${diff.toFixed(3)}°.<br><br><span style="color:#8f7c63">Educational astronomical layer. Nakṣatra uses an approximate Lahiri ayanāṃśa (${ayan.toFixed(3)}°) to convert to a sidereal Moon position; tithi and yoga use Sun−Moon differences, which are unaffected by ayanāṃśa. Traditional festival observance may use sunrise, sunset, pradoṣa, madhyāhna, regional calendar conventions and temple-specific rules.</span>`;const obs=new Astronomy.Observer(pLocation.lat,pLocation.lon,0);const rise=Astronomy.SearchRiseSet('Sun',obs,1,d,1);const set=Astronomy.SearchRiseSet('Sun',obs,-1,d,1);if(rise)$('#pSunrise').textContent=rise.date.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});else $('#pSunrise').textContent='—';$('#panchangDetail').insertAdjacentHTML('beforeend',set?`<br>Sunset: ${set.date.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})}.`: '')}catch(e){console.error(e);$('#panchangDetail').textContent='Could not calculate this date. Check that the astronomy library is loaded.'}}
+function todayPanchang(){const now=new Date();$('#datePicker').valueAsDate=now;updatePanchang($('#datePicker').value);document.getElementById('today').scrollIntoView({behavior:'smooth',block:'start'})}
+$('#todayBtn').onclick=todayPanchang;$('#refreshPanchang').onclick=()=>updatePanchang($('#datePicker').value);$('#datePicker').onchange=e=>updatePanchang(e.target.value);setTimeout(()=>{const label=pLocation.label||'Selected location';$('#pLocationLabel').textContent=`Location: ${label}`;updatePanchang($('#datePicker').value||new Date().toISOString().slice(0,10))},300);
+
+
+/* ===================== FESTIVALS — research-checklist modal ===================== */
+document.querySelectorAll('[data-festival]').forEach(c=>c.onclick=()=>{const name=c.dataset.festival;openModal(name,`<p><b>Festival family:</b> ${name}</p><p>Festival timing is not a single universal civil-date rule. The observance can depend on the governing tithi, local sunrise/sunset, regional month convention, sampradāya, temple tradition and sometimes a specific portion of the day.</p><h3>Research checklist</h3><ul><li>Identify the regional pañcāṅga convention.</li><li>Confirm the location and sunrise/sunset.</li><li>Check which tithi or astronomical condition governs the observance.</li><li>Verify the relevant temple or lineage calendar before treating a date as ritual instruction.</li></ul>`)})
+
+
+/* ===================== GLOBAL SEARCH & TOP-BAR ACTIONS ===================== */
+$('#globalSearch').onkeydown=e=>{if(e.key!=='Enter')return;const q=e.target.value.trim().toLowerCase();if(!q)return;const all=[...document.querySelectorAll('.panel,.entity-card,.kpi')];const hit=all.find(x=>x.textContent.toLowerCase().includes(q));if(hit){const sec=hit.closest('.view');if(sec)showView(sec.id);setTimeout(()=>hit.scrollIntoView({behavior:'smooth',block:'center'}),80);toast('Found a study section')}else toast('No local match. Try Gītā, Śiva, karma, tithi or temple names.')};
+$('#askBtn').onclick=()=>showView('dharma');$('#favBtn').onclick=openFavorites;
+$('#liveBtn').onclick=()=>openModal('Live Sādhanā',`<div class=form><p>Choose a simple, non-prescriptive study/meditation timer.</p><select id="practice"><option>5-minute breath awareness</option><option>10-minute quite sitting</option><option>15-minute focus</option></select><button class="btn primary" onclick="startTimer()">Begin</button><div id="timer" class=result style="font-size:34px;text-align:center">05:00</div></div>`);
+function startTimer(){let s=300;clearInterval(window.tt);const t=$('#timer');window.tt=setInterval(()=>{s--;t.textContent=`${String(Math.floor(s/60)).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`;if(s<=0){clearInterval(window.tt);toast('Practice timer complete 🙏')}},1000);toast('Sādhanā timer started')}
+
+
+/* ===================== ASK DHARMA AI — LIVE OPENAI BACKEND ===================== */
+
+$('#sendChat').onclick = sendChat;
+
+$('#chatInput').onkeydown = e => {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    sendChat();
+  }
+};
+
+async function sendChat() {
+
+  const input = $('#chatInput');
+  const q = input.value.trim();
+
+  if (!q) return;
+
+  const messages = $('#messages');
+  const button = $('#sendChat');
+
+  // Show user message
+  messages.insertAdjacentHTML(
+    'beforeend',
+    `<div class="msg user">${esc(q)}</div>`
+  );
+
+  input.value = '';
+  messages.scrollTop = messages.scrollHeight;
+
+  // UI state
+  button.disabled = true;
+  button.textContent = 'Thinking…';
+
+  $('#aiStatus').textContent = 'Thinking…';
+  $('#aiSources').textContent = 'Contacting Dharma AI…';
+  $('#aiError').textContent = '';
+
+  // Temporary thinking message
+  const thinkingId = 'thinking-' + Date.now();
+
+  messages.insertAdjacentHTML(
+    'beforeend',
+    `<div class="msg bot" id="${thinkingId}">Dharma AI is thinking…</div>`
+  );
+
+  messages.scrollTop = messages.scrollHeight;
+
+  try {
+
+    /*
+      IMPORTANT:
+      Your Node server exposes /api/chat.
+      Therefore the browser MUST call /api/chat.
+    */
+
+    const response = await fetch('/api/chat', {
+
+      method: 'POST',
+
+      headers: {
+        'Content-Type': 'application/json'
+      },
+
+      body: JSON.stringify({
+        message: q
+      })
+
+    });
+
+    const data = await response.json().catch(() => ({}));
+
+    if (!response.ok) {
+      throw new Error(
+        data.error || `Server returned HTTP ${response.status}`
+      );
+    }
+
+    const answer =
+      data.answer ||
+      'Dharma AI returned no answer.';
+
+    // Replace thinking message
+    const thinkingMessage = document.getElementById(thinkingId);
+
+    if (thinkingMessage) {
+      thinkingMessage.innerHTML =
+        esc(answer).replace(/\n/g, '<br>');
+    }
+
+    // Success UI
+    $('#aiStatus').textContent = 'AI online';
+
+    $('#aiSources').textContent =
+      'Live OpenAI response · API key protected on server';
+
+    $('#aiError').textContent = '';
+
+  } catch (error) {
+
+    console.error('Dharma AI frontend error:', error);
+
+    const thinkingMessage =
+      document.getElementById(thinkingId);
+
+    if (thinkingMessage) {
+      thinkingMessage.remove();
+    }
+
+    $('#aiStatus').textContent = 'AI unavailable';
+
+    $('#aiSources').textContent =
+      'Unable to reach the Dharma AI backend.';
+
+    $('#aiError').textContent =
+      error.message || 'AI request failed.';
+
+    // Show useful error inside chat
+    messages.insertAdjacentHTML(
+      'beforeend',
+      `<div class="msg bot">
+        I couldn't reach Dharma AI right now.
+        Please check the server status.
+      </div>`
+    );
+
+  } finally {
+
+    button.disabled = false;
+    button.textContent = 'Send';
+
+    messages.scrollTop = messages.scrollHeight;
+
+    input.focus();
+  }
+}
+
+
+/* ===================== ADMIN / CURATOR'S ROOM ===================== */
+
+$('#healthBtn').onclick = async () => {
+
+  const result = $('#healthResult');
+
+  result.textContent = 'Checking backend…';
+
+  try {
+
+    const response = await fetch('/api/health');
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || 'Health check failed');
+    }
+
+    if (data.aiConfigured) {
+
+      result.innerHTML = `
+        <strong>Backend online</strong><br>
+        OpenAI configuration detected.<br>
+        <span class="muted">
+          Dharma AI is ready to receive requests.
+        </span>
+      `;
+
+      $('#aiStatus').textContent = 'AI online';
+
+    } else {
+
+      result.innerHTML = `
+        <strong>Backend online</strong><br>
+        Server is running, but the OpenAI API key is not configured.
+      `;
+
+      $('#aiStatus').textContent = 'Configuration required';
+    }
+
+  } catch (error) {
+
+    console.error(error);
+
+    result.innerHTML = `
+      <strong>Backend offline</strong><br>
+      The website cannot reach the Node.js server.
+      <br>
+      <span class="muted">
+        Start the server with <code>node server.js</code>.
+      </span>
+    `;
+
+    $('#aiStatus').textContent = 'Backend offline';
+  }
+};
+
+
+/* ===================== CONTENT GOVERNANCE ===================== */
+
+$('#contentBtn').onclick = () => {
+
+  openModal(
+    'Content & Source Governance',
+
+    `
+      <h3>How Dharma content should be maintained</h3>
+
+      <p>
+        The portal should distinguish between primary texts,
+        traditional commentary, historical evidence and modern
+        educational interpretation.
+      </p>
+
+      <hr>
+
+      <p><b>1. Source hierarchy</b></p>
+
+      <ul>
+        <li>Primary scriptures and textual editions</li>
+        <li>Traditional commentaries</li>
+        <li>Academic and institutional research</li>
+        <li>Living regional and sampradāya traditions</li>
+        <li>Modern educational synthesis</li>
+      </ul>
+
+      <p><b>2. Publication workflow</b></p>
+
+      <p>
+        Draft → Source Review → Tradition Review →
+        Published → Periodic Review
+      </p>
+
+      <p><b>3. Quality rules</b></p>
+
+      <ul>
+        <li>Never fabricate quotations.</li>
+        <li>Do not invent verse numbers.</li>
+        <li>Identify the tradition behind contested claims.</li>
+        <li>Separate historical evidence from belief or tradition.</li>
+        <li>Mark uncertain information clearly.</li>
+      </ul>
+
+      <p><b>4. AI rule</b></p>
+
+      <p>
+        AI-generated answers are educational assistance.
+        Important textual and historical claims should ultimately
+        be verified against reliable sources.
+      </p>
+    `
+  );
+};
+
+
+/* ===================== READING / EXPERIENCE SETTINGS ===================== */
+
+$('#settingsBtn').onclick = () => {
+
+  openModal(
+    'Portal Settings',
+
+    `
+      <div class="form">
+
+        <label>
+          <input type="checkbox" id="motion">
+          Reduce motion
+        </label>
+
+        <label>
+          <input type="checkbox" checked>
+          Daily wisdom reminders
+        </label>
+
+        <label>
+          <input type="checkbox" checked>
+          Panchāṅga notifications
+        </label>
+
+        <label>
+          <input type="checkbox" checked>
+          AI source-awareness reminders
+        </label>
+
+        <button
+          class="btn primary"
+          onclick="
+            document.body.style.scrollBehavior =
+              $('#motion').checked ? 'auto' : 'smooth';
+
+            toast('Preferences saved');
+
+            $('#modalBg').classList.remove('open');
+          "
+        >
+          Save settings
+        </button>
+
+      </div>
+    `
+  );
+};
+
+
+/* ===================== SCROLL PROGRESS BAR ===================== */
+
+window.addEventListener('scroll', () => {
+
+  const h =
+    document.documentElement.scrollHeight - innerHeight;
+
+  $('#progressBar').style.width =
+    (h > 0 ? (scrollY / h * 100) : 0) + '%';
+
+});
+
+
+syncFavorites();
+</script>
+</body>
+</html>
