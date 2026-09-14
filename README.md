@@ -30,6 +30,13 @@ The AI is intended as an educational study companion. Answers involving scriptur
 claims, traditions, or philosophical schools should be checked against reliable 
 primary or scholarly sources when accuracy is important.
 
-├── package-lock.json
+sanatan-dharam-ai/
+│
+├── public/
+│   └── index.html
+│
 ├── .gitignore
-└── .env
+├── README.md
+├── package-lock.json
+├── packagejson
+├── server.js
