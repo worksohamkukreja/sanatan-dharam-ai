@@ -37,8 +37,8 @@ primary or scholarly sources when accuracy is important.
 sanatan-dharam-ai/
 │
 ├── api/
-│   └── index.js
-├
+│   └── chat.js
+├   └── health.js
 ├── public/
 │   └── index.html
 │
