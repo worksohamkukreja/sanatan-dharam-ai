@@ -40,3 +40,5 @@ sanatan-dharam-ai/
 ├── package-lock.json
 ├── packagejson
 ├── server.js
+├── vercel.json
+
