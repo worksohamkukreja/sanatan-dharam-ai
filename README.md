@@ -36,6 +36,9 @@ primary or scholarly sources when accuracy is important.
 
 sanatan-dharam-ai/
 │
+├── api/
+│   └── index.js
+├
 ├── public/
 │   └── index.html
 │
