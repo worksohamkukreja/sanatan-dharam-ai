@@ -6,6 +6,10 @@ traditions, scriptures, festivals, and related concepts.
 The project also includes a Dharma AI section that allows users to ask questions
 and receive educational responses through the OpenAI API.
 
+## Live Website
+
+(https://sanatan-dharam-ai.vercel.app/)
+
 ## Features
 
 - Sanatan Dharma educational content
